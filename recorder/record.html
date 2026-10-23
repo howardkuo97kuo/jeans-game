@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Record letter sounds</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@500;700;800&family=Noto+Color+Emoji&display=swap">
+<style>
+:root{--sky:#DCEFFF;--sky2:#BFE0FF;--ink:#1B2A55;--muted:#5E6E9B;--green:#4CC152;--blue:#3D8BFF;--red:#F2564B;--yellow:#FFC928}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sky);color:var(--ink);font:17px/1.45 Nunito,system-ui,sans-serif;padding:20px}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font:700 28px Fredoka,sans-serif;margin:0}
+.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 0 var(--sky2)}
+.tips{margin:6px 0 0;padding-left:20px}
+.big{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.letter{font:700 130px/1 Fredoka,sans-serif;color:var(--blue);min-width:150px}
+.pic{font:80px/1 "Noto Color Emoji",sans-serif}
+.say{font:700 26px Fredoka,sans-serif}
+.hint{color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{font:800 17px Nunito,sans-serif;border:0;border-radius:14px;padding:13px 20px;cursor:pointer;background:var(--sky);color:var(--ink)}
+button.go{background:#B8322A;color:#fff}
+button.ok{background:#1F6E26;color:#fff}
+button:disabled{opacity:.4;cursor:default}
+.meter{height:14px;border-radius:7px;background:var(--sky);overflow:hidden;margin-top:12px}
+.meter i{display:block;height:100%;width:100%;background:var(--green);transform:scaleX(0);transform-origin:left}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px}
+.chips button{padding:9px 0;font:700 18px Fredoka,sans-serif}
+.chips .done{background:#BDEBBB}
+.chips .cur{outline:3px solid var(--ink)}
+#msg{min-height:1.4em;font-weight:800}
+.warn{background:#FFF3C4}
+</style></head>
+<body><main>
+<h1>Record the 26 letter sounds</h1>
+<div class="card warn"><b>Before you start:</b> use a quiet room and hold the microphone about a hand's width from your mouth. Say the <b>sound</b> the letter makes, not its name (for B say "buh", not "bee"). Keep stops (b, d, g, k, p, t) very short and crisp, and hold the hissing and humming sounds (f, l, m, n, r, s, v, z) for about one second. Everything stays on this computer.</div>
+
+<div class="card" id="stage">
+  <div class="big"><div class="letter" id="letter">A a</div><div><div class="pic" id="pic">🍎</div><div class="say" id="say">ah, as in apple</div></div></div>
+  <p class="hint" id="hint"></p>
+  <div class="meter"><i id="lvl"></i></div>
+  <div class="row">
+    <button class="go" id="rec">● Record</button>
+    <button id="play" disabled>▶ Play it back</button>
+    <button class="ok" id="keep" disabled>✔ Keep and go to the next</button>
+  </div>
+  <div class="row"><button id="prev">← Back</button><button id="skip">Skip →</button></div>
+  <p id="msg"></p>
+</div>
+<div class="card"><b>Progress</b> <span id="count"></span><div class="chips" id="chips" style="margin-top:10px"></div></div>
+</main>
+<script>
+const SOUNDS={
+ a:['🍎','ah, as in apple','Short "a", mouth open wide.'],b:['🐻','buh, as in bear','Very short. Do not add "ee".'],
+ c:['🐱','kuh, as in cat','The hard "k" sound.'],d:['🐶','duh, as in dog','Very short.'],
+ e:['🐘','eh, as in elephant','Short "e".'],f:['🐟','fff, as in fish','Hold it for a second, no voice, just air.'],
+ g:['🍇','guh, as in grapes','The hard "g", very short.'],h:['🐴','huh, as in horse','Just a breath of air.'],
+ i:['🍦','ih, as in igloo','Short "i", like the start of "it".'],j:['🧃','juh, as in juice','Short and crisp.'],
+ k:['🪁','kuh, as in kite','Very short.'],l:['🦁','lll, as in lion','Hold it, tongue behind your top teeth.'],
+ m:['🐵','mmm, as in monkey','Hold it with your lips closed.'],n:['👃','nnn, as in nose','Hold it for a second.'],
+ o:['🐙','ah, as in octopus','Short "o", like "ox".'],p:['🐷','puh, as in pig','Very short, a little puff of air.'],
+ q:['👸','kwuh, as in queen','"kw" together, short.'],r:['🐰','rrr, as in rabbit','Hold it, lips rounded.'],
+ s:['☀️','sss, as in sun','Hold the hiss for a second.'],t:['🐯','tuh, as in tiger','Very short.'],
+ u:['☂️','uh, as in umbrella','Short "u".'],v:['🎻','vvv, as in violin','Hold it, teeth on your bottom lip.'],
+ w:['🐳','wuh, as in whale','Short, lips rounded.'],x:['📦','ks, as in box','"k" then "s", quickly.'],
+ y:['🪀','yuh, as in yo-yo','Short.'],z:['🦓','zzz, as in zebra','Hold the buzz for a second.']};
+const L='abcdefghijklmnopqrstuvwxyz'.split('');
+let i=0,stream=null,mr=null,blob=null,saved=new Set(),timer=null,ctx,an,raf;
+const $=s=>document.querySelector(s),msg=t=>$('#msg').textContent=t;
+function show(){
+  const l=L[i],[p,s,h]=SOUNDS[l];
+  $('#letter').textContent=l.toUpperCase()+' '+l;$('#pic').textContent=p;$('#say').textContent='Say: '+s;$('#hint').textContent=h;
+  blob=null;$('#play').disabled=true;$('#keep').disabled=true;msg(saved.has(l)?'Already saved. You can record it again to replace it.':'');
+  chips();
+}
+function chips(){
+  $('#count').textContent=saved.size+' of 26 saved';
+  $('#chips').innerHTML=L.map((l,j)=>`<button data-i="${j}" class="${saved.has(l)?'done':''} ${j===i?'cur':''}">${l.toUpperCase()}</button>`).join('');
+}
+$('#chips').onclick=e=>{const b=e.target.closest('button');if(b){i=+b.dataset.i;show()}};
+async function mic(){
+  if(stream)return stream;
+  stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}});
+  ctx=new AudioContext();an=ctx.createAnalyser();an.fftSize=512;ctx.createMediaStreamSource(stream).connect(an);
+  const buf=new Uint8Array(an.fftSize);
+  (function loop(){an.getByteTimeDomainData(buf);let m=0;for(const v of buf)m=Math.max(m,Math.abs(v-128));$('#lvl').style.transform='scaleX('+Math.min(1,m/128*1.4)+')';raf=requestAnimationFrame(loop)})();
+  return stream;
+}
+$('#rec').onclick=async()=>{
+  if(mr&&mr.state==='recording'){mr.stop();return}
+  try{await mic()}catch(e){msg('The microphone is blocked. Click the lock icon in the address bar, allow the microphone, and reload.');return}
+  const chunks=[];mr=new MediaRecorder(stream);
+  mr.ondataavailable=e=>chunks.push(e.data);
+  mr.onstop=()=>{clearTimeout(timer);$('#rec').textContent='● Record again';blob=new Blob(chunks,{type:mr.mimeType});$('#play').disabled=false;$('#keep').disabled=false;msg('Recorded. Play it back, then keep it or record again.')};
+  mr.start();$('#rec').textContent='■ Stop';msg('Recording... say the sound now. It stops by itself after 3 seconds.');
+  timer=setTimeout(()=>{if(mr.state==='recording')mr.stop()},3000);
+};
+$('#play').onclick=()=>{if(blob){const a=new Audio(URL.createObjectURL(blob));a.play()}};
+$('#keep').onclick=async()=>{
+  if(!blob)return;const l=L[i];$('#keep').disabled=true;msg('Saving...');
+  try{
+    const r=await fetch('/save/'+l,{method:'POST',headers:{'Content-Type':blob.type.split(';')[0]||'audio/webm'},body:blob});
+    if(!r.ok)throw 0;saved.add(l);$('#rec').textContent='● Record';
+    if(saved.size===26){msg('All 26 saved. You can close this page and tell Claude you are done.');chips();return}
+    i=L.findIndex((x,j)=>j>i&&!saved.has(x));if(i<0)i=L.findIndex(x=>!saved.has(x));show();
+  }catch(e){msg('Could not save. Is the recorder still running?');$('#keep').disabled=false}
+};
+$('#prev').onclick=()=>{i=(i+25)%26;$('#rec').textContent='● Record';show()};
+$('#skip').onclick=()=>{i=(i+1)%26;$('#rec').textContent='● Record';show()};
+fetch('/status').then(r=>r.json()).then(j=>{saved=new Set(j.saved);i=Math.max(0,L.findIndex(x=>!saved.has(x)));show()}).catch(()=>show());
+</script></body></html>
