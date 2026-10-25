@@ -13,3 +13,5 @@ Every activity has three levels (easy, normal, challenge). Three first-try answe
 Pictures are original inline SVG drawings: about 80 of them, three or more for each letter (shown after a right answer and in the letter sound questions), plus sticker pages for pets, zoo animals, fruit and vehicles. Progress is saved in the browser. A grown-ups area (hold the corner gear for 2.5 seconds) has progress charts and settings.
 
 The characters are original designs. Voice clips were generated with Microsoft's Edge text-to-speech.
+
+Also: shapes and colours, and colour patterns (the Shapes card on the home screen); a daily goal ring on the home screen and a weekly report in the grown-ups area; and install-to-home-screen with offline play (`manifest.json`, `sw.js`, `icon.svg`; needs the game to be served over https or localhost).

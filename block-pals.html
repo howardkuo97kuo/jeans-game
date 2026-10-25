@@ -1,5 +1,12 @@
 <meta charset="utf-8">
 <title>Block Pals</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#DCEFFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&family=Noto+Color+Emoji&display=swap">
 <style>
@@ -283,6 +290,13 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 @keyframes okpulse{0%{transform:scale(1)}40%{transform:scale(1.18) rotate(-3deg)}100%{transform:scale(1)}}
 @keyframes starIn{from{opacity:0;transform:scale(0) rotate(-200deg)}to{opacity:1;transform:none}}
 @keyframes heroIn{from{opacity:0;transform:translateY(-120px) scale(.3) rotate(-30deg)}to{opacity:1;transform:none}}
+.goal{position:relative;width:clamp(44px,9vmin,64px);height:clamp(44px,9vmin,64px);flex:none}
+.goal>svg{width:100%;height:100%}
+.goal b{position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(14px,3vmin,20px) var(--f-display);color:var(--ink)}
+.goal b svg{width:55%;height:55%}
+.pat{display:flex;gap:clamp(6px,1.6vmin,14px);flex-wrap:wrap;justify-content:center;align-items:center;max-width:100%}
+.pat svg.art{width:clamp(34px,9vmin,76px);height:clamp(34px,9vmin,76px)}
+.patq{width:clamp(34px,9vmin,76px);height:clamp(34px,9vmin,76px);border-radius:14px;border:4px dashed var(--purple);display:grid;place-items:center;font:700 clamp(24px,6vmin,48px) var(--f-display);color:var(--purple)}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
@@ -412,6 +426,7 @@ const OBJ=['apple','fish','star','car','flower','ladybug','ball','cake'];
 const KEY='blockpals.v1';
 const defaults=()=>({name:'',stickers:{},newStickers:[],perfects:0,breakMin:15,breakLen:2,days:{},hints:true,music:true,musicVol:0.5,unlockAll:false,voice:'',rate:0.85,unlocked:[],act:{},rec:{},timer:true,bestCombo:0});
 function load(){try{return Object.assign(defaults(),JSON.parse(localStorage.getItem(KEY))||{})}catch(e){return defaults()}}
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
 let S=load(); let storageOk=true;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));storageOk=true}catch(e){storageOk=false}}
 const A=id=>S.act[id]||(S.act[id]={level:0,rounds:0,passed:0,correct:0,asked:0,weak:[]});
@@ -701,12 +716,19 @@ function homeStickers(){
   const show=ids.length?ids:['0:0','2:0','6:0'];
   return show.map((id,i)=>{const [p,j]=id.split(':').map(Number);return `<span class="em ${ids.length?'':'ghost'}" style="transform:rotate(${(i-1)*9}deg)">${stkFace(p,j)}</span>`}).join('');
 }
+/* daily goal: a ring that fills as questions are answered today */
+const goalN=()=>S.goal||20,todayQ=()=>((S.days||{})[dayKey()]||{}).q||0;
+function goalRing(){
+  const n=goalN(),q=Math.min(todayQ(),n),C=2*Math.PI*20,done=todayQ()>=n;
+  return `<div class="goal" title="Today: ${todayQ()} of ${n}" aria-label="Today's goal: ${todayQ()} of ${n} questions"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#fff" stroke="#BFE0FF" stroke-width="6"/><circle cx="24" cy="24" r="20" fill="none" stroke="${done?'#FFC928':'#4CC152'}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C*q/n} ${C}" transform="rotate(-90 24 24)"/></svg><b>${done?ICON.star(true):todayQ()}</b></div>`;
+}
 function screenHome(){
   stopSay();
-  render(`<div class="home"><div class="hellorow"><span class="round" style="visibility:hidden"></span><div class="hello">Hi ${esc(nm())}!</div>${ibtn('music',S.music?ICON.music:ICON.musicOff,S.music?'Music on':'Music off')}</div>
+  render(`<div class="home"><div class="hellorow">${goalRing()}<div class="hello">Hi ${esc(nm())}!</div>${ibtn('music',S.music?ICON.music:ICON.musicOff,S.music?'Music on':'Music off')}</div>
   <div class="cards">
    <button class="card" style="--c:${pal(5)[0]};--cd:${pal(5)[1]}" data-act="menu" data-arg="letters"><div class="art">${charSVG('a','A')}${charSVG('b','b')}</div><div class="glyph sm">Letters</div></button>
    <button class="card" style="--c:${pal(3)[0]};--cd:${pal(3)[1]}" data-act="menu" data-arg="numbers"><div class="art">${stackSVG(3,{col:5,face:false})}${stackSVG(7,{col:1,face:false})}</div><div class="glyph sm">Numbers</div></button>
+   <button class="card" style="--c:${pal(0)[0]};--cd:${pal(0)[1]}" data-act="menu" data-arg="shapes"><div class="art">${shapeSVG('circle','yellow')}${shapeSVG('triangle','green')}${shapeSVG('square','blue')}</div><div class="glyph sm">Shapes</div></button>
    <button class="card" style="--c:${pal(7)[0]};--cd:${pal(7)[1]}" data-act="stickers"><div class="art stkart">${homeStickers()}</div><div class="glyph sm">${stickerCount()} / ${STK_TOTAL}</div></button>
    <button class="card" style="--c:${pal(6)[0]};--cd:${pal(6)[1]}" data-act="blocks"><div class="art">${stackSVG(4,{col:2})}</div><div class="glyph sm">${S.unlocked.length} / 46</div></button>
   </div></div>
@@ -731,6 +753,9 @@ const MENUS={
   {id:'ntrace',c:5,glyph:'✏️7',gate:null},
   {id:'nseq',c:1,glyph:'1→100',gate:null}]}
 };
+MENUS.shapes={title:'Shapes',items:[
+  {id:'sshape',c:3,glyph:'▲ ● ■',gate:null},
+  {id:'spattern',c:6,glyph:'● ■ ● ?',gate:'sshape'}]};
 const isOpen=it=>S.unlockAll||!it.gate||A(it.gate).passed>0;
 function screenMenu(which){
   stopSay();const m=MENUS[which];
@@ -753,6 +778,10 @@ const uniqueNear=(ans,n,lo,hi,spread)=>{
   return shuffle([...s]);
 };
 const numChoices=vals=>vals;
+const SH_COL=[{n:'red',c:'#F2564B'},{n:'blue',c:'#3D8BFF'},{n:'yellow',c:'#FFC928'},{n:'green',c:'#4CC152'},{n:'orange',c:'#FF9A2E'},{n:'purple',c:'#9B6BE8'},{n:'pink',c:'#FF7DB0'}];
+const SH_SHAPES=[{n:'circle'},{n:'square'},{n:'triangle'},{n:'star'},{n:'heart'},{n:'rectangle'},{n:'oval'},{n:'diamond'}];
+const SH_PATH={circle:'<circle cx="50" cy="50" r="38"/>',square:'<rect x="14" y="14" width="72" height="72" rx="6"/>',triangle:'<path d="M50 10L92 86H8Z"/>',star:'<path d="M50 6L62 36L94 38L69 58L77 90L50 72L23 90L31 58L6 38L38 36Z"/>',heart:'<path d="M50 88C10 58 6 32 22 20Q38 10 50 30Q62 10 78 20Q94 32 90 58Q80 74 50 88Z"/>',rectangle:'<rect x="6" y="26" width="88" height="48" rx="6"/>',oval:'<ellipse cx="50" cy="50" rx="44" ry="28"/>',diamond:'<path d="M50 6L90 50L50 94L10 50Z"/>'};
+const shapeSVG=(s,col)=>{const c=(SH_COL.find(x=>x.n===col)||{c:'#B8C2DA'}).c;return `<svg viewBox="0 0 100 100" class="art" aria-hidden="true"><g fill="${c}" stroke="#1B2A55" stroke-width="3.5" stroke-linejoin="round">${SH_PATH[s]}</g></svg>`};
 const GEN={
  lfind(lv,fixed){
   const L=fixed||pick(AZ),n=[3,4,6][lv];
@@ -843,6 +872,36 @@ const GEN={
     stage:`<div class="objs" id="objs" style="grid-template-columns:repeat(${Math.min(N,5)},auto)">${Array.from({length:N},(_,i)=>`<button class="obj" data-act="count" data-i="${i}" aria-label="count">${svgArt(e)}</button>`).join('')}</div>`,
     choices:vals.map(v=>({html:v,ok:v===N}))};
  },
+ sshape(lv,fixed){
+  const cols=SH_COL,shs=SH_SHAPES,fx=fixed?fixed.split(':'):null;
+  let mode=fx?fx[0]:(lv===0?'c':lv===1?'s':'m'),tc,ts;
+  if(mode==='c'){tc=fx?fx[1]:pick(cols).n;
+    const others=shuffle(cols.filter(c=>c.n!==tc)).slice(0,lv===0?2:3);
+    const sh=pick(shs.slice(0,3)).n;
+    return {key:'c:'+tc,say:['Find the colour',tc],stage:`<div class="mascot">${charSVG(tc[0],'?')}</div>`,
+      choices:shuffle([tc,...others.map(c=>c.n)]).map(n=>({html:shapeSVG(sh,n),emoji:1,ok:n===tc}))};}
+  if(mode==='s'){ts=fx?fx[1]:pick(shs).n;const col=pick(cols).n;
+    const others=shuffle(shs.filter(s=>s.n!==ts)).slice(0,3);
+    return {key:'s:'+ts,say:['Find the',ts],stage:`<div class="mascot">${charSVG(ts[0],'?')}</div>`,
+      choices:shuffle([ts,...others.map(s=>s.n)]).map(n=>({html:shapeSVG(n,col),emoji:1,ok:n===ts}))};}
+  tc=fx?fx[1]:pick(cols).n;ts=fx?fx[2]:pick(shs).n;
+  const wrongs=new Set();let g=0;
+  while(wrongs.size<3&&g++<60){const c=Math.random()<.5?tc:pick(cols).n,s=c===tc?pick(shs).n:(Math.random()<.5?ts:pick(shs).n);if(!(c===tc&&s===ts))wrongs.add(c+':'+s)}
+  return {key:`m:${tc}:${ts}`,say:['Find the',tc,ts],stage:`<div class="mascot">${charSVG(ts[0],'?')}</div>`,
+    choices:shuffle([tc+':'+ts,...wrongs]).map(k=>{const [c,s]=k.split(':');return {html:shapeSVG(s,c),emoji:1,ok:c===tc&&s===ts}})};
+ },
+ spattern(lv,fixed){
+  const kinds=lv===0?['AB','AB','ABB']:lv===1?['AAB','ABB','AB']:['ABC','AABB','ABAC'];
+  const kind=fixed?fixed.split(':')[0]:pick(kinds),cs=SH_COL.map(c=>c.n),use=fixed?fixed.split(':')[1].split(','):shuffle(cs).slice(0,3);
+  const shp=fixed?fixed.split(':')[2]:pick(['circle','square','heart','star','triangle']);
+  const unit=kind.split('').map(ch=>use['ABC'.indexOf(ch)]);
+  const reps=kind.length<=2?4:3,seq=[];for(let i=0;i<reps*unit.length;i++)seq.push(unit[i%unit.length]);
+  const cut=seq.length-1-(lv===0?0:rnd(1)),ans=seq[cut],shown=seq.slice(0,cut);
+  const opts=shuffle([ans,...shuffle(use.filter(x=>x!==ans)).concat(shuffle(cs.filter(x=>!use.includes(x)))).slice(0,lv===0?2:3)]);
+  return {key:`${kind}:${use.join(',')}:${shp}`,say:['What comes next?'],
+    stage:`<div class="pat">${shown.map(c=>shapeSVG(shp,c)).join('')}<span class="patq">?</span></div>`,
+    choices:opts.map(c=>({html:shapeSVG(shp,c),emoji:1,ok:c===ans}))};
+ },
  ncompare(lv,fixed){
   const hi=[10,15,20][lv],e=pick(OBJ),k=lv===2?3:2;let counts,more=lv===0||Math.random()<.6;
   if(fixed){const p=fixed.split(':');more=p[0]==='m';counts=p[1].split('v').map(Number)}
@@ -905,7 +964,7 @@ const GEN={
     choices:vals.map(v=>({html:v,ok:v===ans}))};
  }
 };
-const ACT_NAME={lsight: 'Read Words', 'nseq': 'Count to 100', 'ltrace': 'Trace Letters', 'ntrace': 'Trace Numbers', 'lfind': 'Find the Letter', 'lsound': 'Letter Sounds', 'lword': 'Build a Word', 'nfind': 'Find the Number', 'ncount': 'Count Them', 'nadd': 'Add Up', 'nsub': 'Take Away', 'nmult': 'Times and Groups', 'lmatch': 'Big and Small Letters', 'ncompare': 'More or Fewer?'};
+const ACT_NAME={sshape:'Shapes and Colours',spattern:'What Comes Next?',lsight: 'Read Words', 'nseq': 'Count to 100', 'ltrace': 'Trace Letters', 'ntrace': 'Trace Numbers', 'lfind': 'Find the Letter', 'lsound': 'Letter Sounds', 'lword': 'Build a Word', 'nfind': 'Find the Number', 'ncount': 'Count Them', 'nadd': 'Add Up', 'nsub': 'Take Away', 'nmult': 'Times and Groups', 'lmatch': 'Big and Small Letters', 'ncompare': 'More or Fewer?'};
 
 /* ---------- round engine ---------- */
 let R=null;
@@ -1063,7 +1122,7 @@ function initTrace(q){
     if(demo.on){
       const s=strokes.find(x=>!x.done);
       if(s){
-        const n=s.pts.length,run=n*34,t=(now-demo.t0)%(run+700),pt=s.pts[Math.min(n-1,Math.floor(Math.min(1,t/run)*(n-1)))];
+        const n=s.pts.length,run=n*34,t=Math.max(0,now-demo.t0)%(run+700),pt=s.pts[Math.min(n-1,Math.floor(Math.min(1,t/run)*(n-1)))];
         ctx.fillStyle='#FFC928';ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(pt[0],pt[1],5.5,0,7);ctx.fill();ctx.stroke();
       }
     }
@@ -1219,8 +1278,8 @@ function finishRound(){
   else{a.streak=0;if(f<=3&&a.level>0){a.low=(a.low||0)+1;if(a.low>=2){a.level--;a.low=0}}else a.low=0}
   R.missed.forEach(k=>{if(!a.weak.includes(k))a.weak.push(k)});
   a.weak=a.weak.filter(k=>!R.cleared.includes(k)||R.missed.includes(k)).slice(-12);
-  const dom=R.id[0]==='l'?'L':'N';
-  const all=dom==='L'?AZ.map(x=>'L:'+x):Array.from({length:20},(_,i)=>'N:'+(i+1));
+  const dom=R.id[0]==='s'?null:R.id[0]==='l'?'L':'N';
+  const all=!dom?[]:dom==='L'?AZ.map(x=>'L:'+x):Array.from({length:20},(_,i)=>'N:'+(i+1));
   const next=all.find(k=>!S.unlocked.includes(k));
   if(next)S.unlocked.push(next);
   const stars=f>=7?3:f>=5?2:1,aw=awardStickers(stars,f,leveled);
@@ -1427,6 +1486,8 @@ function prettyKey(id,k){
    case 'ltrace':return `Tracing ${k}`;
    case 'nfind':return `Number ${k} (finding)`;
    case 'ncount':return `Counting ${k} things`;
+   case 'sshape':{const p=k.split(':');return p[0]==='m'?`${p[1]} ${p[2]}`:p[1]}
+   case 'spattern':return `Pattern ${k.split(':')[0]}`;
    case 'lmatch':return `Letter ${k} (big and small)`;
    case 'ncompare':{const [m,c]=k.split(':');return `Which has ${m==='m'?'more':'fewer'}: ${c.split('v').join(' or ')}`}
    case 'ntrace':return `Tracing ${k}`;
@@ -1473,6 +1534,21 @@ function suggestions(pd){
   if(!out.length)out.push(pd.asked?'Nothing needs attention right now.':'The charts fill in as she plays.');
   return out;
 }
+function weekStats(off){
+  const days=S.days||{};let q=0,ok=0,d=0;
+  for(let i=0;i<7;i++){const dt=new Date();dt.setDate(dt.getDate()-off*7-i);const v=days[dayKey(dt)];if(v&&v.q){q+=v.q;ok+=v.ok;d++}}
+  return {q,ok,d,pct:q?Math.round(100*ok/q):0};
+}
+function weekHTML(){
+  const w=weekStats(0),p=weekStats(1),arrow=(a,b)=>!b?'':a>b?' ▲':a<b?' ▼':'';
+  const goalDays=(()=>{let n=0;for(let i=0;i<7;i++){const dt=new Date();dt.setDate(dt.getDate()-i);const v=(S.days||{})[dayKey(dt)];if(v&&v.q>=goalN())n++}return n})();
+  return `<section><h3>This week</h3><div class="stats">
+    <div class="stat"><b>${w.q}${arrow(w.q,p.q)}</b><small>questions (last week ${p.q})</small></div>
+    <div class="stat"><b>${w.q?w.pct+'%':'–'}${w.q&&p.q?arrow(w.pct,p.pct):''}</b><small>right first time (last week ${p.q?p.pct+'%':'–'})</small></div>
+    <div class="stat"><b>${w.d}/7</b><small>days played</small></div>
+    <div class="stat"><b>${goalDays}/7</b><small>days she reached the goal of ${goalN()}</small></div>
+    <div class="stat"><b>${S.bestCombo||0}</b><small>best streak in a row</small></div></div></section>`;
+}
 function progressHTML(){
   const pd=progressData(),pct=pd.asked?Math.round(100*pd.correct/pd.asked)+'%':'–';
   const L=AZ.map(l=>heatCell(l,itemStat(['lfind','lsound','ltrace'],l))).join('');
@@ -1492,6 +1568,7 @@ function progressHTML(){
     <div class="stat"><b>${pd.streak}</b><small>day streak</small></div>
     <div class="stat"><b>${stickerCount()}/${STK_TOTAL}</b><small>stickers</small></div></div>
     <ul class="tips">${suggestions(pd).map(t=>`<li>${esc(t)}</li>`).join('')}</ul></section>
+  ${weekHTML()}
   <section><h3>Questions per day</h3>${dayChart()}<div class="legend"><span><i style="background:#4CC152"></i>Right first time</span><span><i style="background:#BFE0FF"></i>Needed more tries or a hint</span></div>
    <small>The detailed charts below start counting from the day you installed this version.</small></section>
   <section><h3>Letters</h3><small>Counts finding, sounds and tracing together.</small><div class="hmgrid">${L}</div>${heatLegend}</section>
@@ -1504,7 +1581,8 @@ function progressHTML(){
 }
 function summaryText(){
   const pd=progressData();
-  const lines=[`${S.name||'Child'}'s progress in Block Pals`,`${pd.asked} questions, ${pd.asked?Math.round(100*pd.correct/pd.asked):0}% right first time, ${pd.rounds} rounds, ${pd.played} days played, ${pd.streak} day streak.`,''];
+  const w=weekStats(0),pw=weekStats(1);
+  const lines=[`${S.name||'Child'}'s progress in Block Pals`,`This week: ${w.q} questions (${w.q?w.pct:0}% right first time) on ${w.d} days. Last week: ${pw.q} questions.`,`${pd.asked} questions, ${pd.asked?Math.round(100*pd.correct/pd.asked):0}% right first time, ${pd.rounds} rounds, ${pd.played} days played, ${pd.streak} day streak.`,''];
   pd.ids.forEach(id=>{const a=A(id);lines.push(`${ACT_NAME[id]}: level ${a.level+1}/3, ${a.rounds} rounds, ${a.asked?Math.round(100*a.correct/a.asked)+'%':'no answers yet'}`)});
   if(pd.hard.length){lines.push('','Hardest right now:');pd.hard.slice(0,8).forEach(h=>lines.push(`- ${prettyKey(h.id,h.k)}: ${h.ok} of ${h.n} right first time`))}
   return lines.join('\n');
@@ -1517,6 +1595,7 @@ function settingsHTML(){
    <label for="pBreak">Break reminder <select id="pBreak">${[[0,'Off'],[10,'After 10 minutes of play'],[15,'After 15 minutes of play'],[20,'After 20 minutes of play'],[30,'After 30 minutes of play']].map(([v,t])=>`<option value="${v}" ${S.breakMin===v?'selected':''}>${t}</option>`).join('')}</select></label>
    <label for="pBreakLen">Break length <select id="pBreakLen">${[1,2,3,5].map(v=>`<option value="${v}" ${S.breakLen===v?'selected':''}>${v} minute${v>1?'s':''}</option>`).join('')}</select></label>
    <div><button class="btn ghost" data-act="breaknow">Show the break screen now</button> <small>The break waits for the end of a round, never interrupts a question, and only counts time she is actually playing. Hold the gear on the break screen to end it early.</small></div>
+   <label for="pGoal">Daily goal <select id="pGoal">${[10,20,30,40,60].map(v=>`<option value="${v}" ${goalN()===v?'selected':''}>${v} questions a day</option>`).join('')}</select></label>
    <label for="pTimer"><input type="checkbox" id="pTimer" ${S.timer?'checked':''}> Gentle timer on the top level (a bar that slowly empties; nothing bad happens when it runs out, beating it earns a bonus sticker)</label>
    <label for="pUnlock"><input type="checkbox" id="pUnlock" ${S.unlockAll?'checked':''}> Open every activity now (otherwise each one opens after the one before)</label></section>
   <section><h3>Music</h3>
@@ -1617,6 +1696,7 @@ app.addEventListener('input',e=>{
 app.addEventListener('change',e=>{
   if(e.target.id==='pUnlock'){S.unlockAll=e.target.checked;save()}
   if(e.target.id==='pHints'){S.hints=e.target.checked;save()}
+  if(e.target.id==='pGoal'){S.goal=+e.target.value;save()}
   if(e.target.id==='pTimer'){S.timer=e.target.checked;save()}
   if(e.target.id==='pBreak'){S.breakMin=+e.target.value;save()}
   if(e.target.id==='pBreakLen'){S.breakLen=+e.target.value;save()}
