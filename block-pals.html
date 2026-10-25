@@ -260,6 +260,29 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .toast{position:fixed;left:50%;top:14%;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:8px;background:var(--yellow);color:var(--ink);padding:8px 20px;border-radius:24px;font:600 clamp(18px,4vmin,28px) var(--f-display);box-shadow:0 5px 0 #C79A0B;pointer-events:none;animation:toast 2.3s ease both}
 .toast svg{width:1.3em;height:1.3em}.toast b{font-weight:700}
 @keyframes toast{0%{opacity:0;transform:translate(-50%,-14px) scale(.8)}12%{opacity:1;transform:translate(-50%,0) scale(1.05)}20%{transform:translate(-50%,0) scale(1)}85%{opacity:1}100%{opacity:0}}
+/* names on menu cards and more movement */
+.cname{font:700 clamp(15px,3.2vmin,24px) var(--f-display);line-height:1.1;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.18);padding:0 4px}
+.menu .card,.home .card{animation:cardIn .5s cubic-bezier(.2,1.4,.4,1) backwards}
+.cards .card:nth-child(2){animation-delay:.07s}.cards .card:nth-child(3){animation-delay:.14s}.cards .card:nth-child(4){animation-delay:.21s}.cards .card:nth-child(5){animation-delay:.28s}.cards .card:nth-child(6){animation-delay:.35s}.cards .card:nth-child(7){animation-delay:.42s}.cards .card:nth-child(8){animation-delay:.49s}.cards .card:nth-child(9){animation-delay:.56s}
+.card:not(.locked) .glyph,.card:not(.locked) .art{animation:bob 3s ease-in-out infinite}
+.cards .card:nth-child(even) .glyph,.cards .card:nth-child(even) .art{animation-delay:-1.4s}
+.choices .tile:not(.hint):not(.ok):not(.wrong){animation:tileIn .45s cubic-bezier(.2,1.5,.4,1) backwards}
+.choices .tile:nth-child(2):not(.hint):not(.ok){animation-delay:.08s}.choices .tile:nth-child(3):not(.hint):not(.ok){animation-delay:.16s}.choices .tile:nth-child(4):not(.hint):not(.ok){animation-delay:.24s}.choices .tile:nth-child(5):not(.hint):not(.ok){animation-delay:.32s}.choices .tile:nth-child(6):not(.hint):not(.ok){animation-delay:.4s}
+.stage>*:not(.mascot):not(.tcv){animation:stageIn .5s ease-out backwards}
+.tile:hover{transform:translateY(-3px) rotate(-1deg)}
+.tile.ok{animation:okpulse .6s ease}
+.stars svg{animation:starIn .7s cubic-bezier(.2,1.6,.4,1) backwards}
+.stars svg:nth-child(2){animation-delay:.25s}.stars svg:nth-child(3){animation-delay:.5s}
+.celebrate .hero,.celebrate .hero2{animation:heroIn .8s cubic-bezier(.2,1.5,.4,1) .3s backwards}
+.celebrate .badge{animation:pop .5s .8s backwards}
+.obj:active{animation:pop .3s}
+.picstrip figure:nth-child(2){animation:pop .5s .1s backwards}.picstrip figure:nth-child(3){animation:pop .5s .2s backwards}
+@keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(.8)}to{opacity:1;transform:none}}
+@keyframes tileIn{from{opacity:0;transform:translateY(50px) scale(.6)}to{opacity:1;transform:none}}
+@keyframes stageIn{from{opacity:0;transform:translateY(-24px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes okpulse{0%{transform:scale(1)}40%{transform:scale(1.18) rotate(-3deg)}100%{transform:scale(1)}}
+@keyframes starIn{from{opacity:0;transform:scale(0) rotate(-200deg)}to{opacity:1;transform:none}}
+@keyframes heroIn{from{opacity:0;transform:translateY(-120px) scale(.3) rotate(-30deg)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
@@ -423,10 +446,14 @@ async function clipBuf(key){
     return BUF[key]={buf,off:s/buf.sampleRate,dur:(e-s)/buf.sampleRate};
   }catch(err){return BUF[key]=null}
 }
-async function playClip(key){
+/* letter sounds for stop consonants are cut short so "kuh" is heard as a clipped /k/ and not "Ku" (the clips carry a long "uh" tail) */
+const STOP_CUT={b:.13,c:.12,d:.13,g:.13,k:.12,p:.12,t:.11,j:.16,q:.14,h:.18,w:.2,y:.2};
+async function playClip(key,maxDur){
   const c=await clipBuf(key);if(!c)return false;
-  return new Promise(res=>{const src=getCtx().createBufferSource();src.buffer=c.buf;src.connect(ac.destination);
-    curSrc={src,res};src.onended=()=>{curSrc=null;res(true)};src.start(0,c.off,c.dur)});
+  const dur=maxDur?Math.min(c.dur,maxDur):c.dur;
+  return new Promise(res=>{const src=getCtx().createBufferSource(),g=ac.createGain();src.buffer=c.buf;src.connect(g);g.connect(ac.destination);
+    if(maxDur&&dur<c.dur){const t=ac.currentTime;g.gain.setValueAtTime(1,t);g.gain.setValueAtTime(1,t+Math.max(0,dur-.04));g.gain.linearRampToValueAtTime(0,t+dur)}
+    curSrc={src,res};src.onended=()=>{curSrc=null;res(true)};src.start(0,c.off,dur)});
 }
 function clipPlan(text){
   if(!CLIPS)return null;
@@ -466,7 +493,7 @@ async function sayParts(parts){
   for(const p of parts){
     if(my!==sayTok)return;
     if(typeof p==='number'){await wait(p);continue}
-    if(p.sound){const l=p.sound.toLowerCase();if(S.rec[l])await playRec(S.rec[l]);else if(!(await playClip('snd_'+l)))await ttsSpeak(PHON[l]);continue}
+    if(p.sound){const l=p.sound.toLowerCase();if(S.rec[l])await playRec(S.rec[l]);else if(!(await playClip('snd_'+l,STOP_CUT[l])))await ttsSpeak(PHON[l]);continue}
     await speak(p,my);
   }
   if(my===sayTok)duck(false);
@@ -711,7 +738,7 @@ function screenMenu(which){
   <div class="menu"><div class="cards">${m.items.map(it=>{
     const open=isOpen(it),a=A(it.id),[c,cd]=pal(it.c);
     return `<button class="card ${open?'':'locked'}" style="--c:${c};--cd:${cd}" data-act="${open?'play':'locked'}" data-arg="${it.id}" data-menu="${which}">
-      ${open?'':ICON.lock}<div class="glyph ${it.glyph.length>3?'xs':''}">${esc(it.glyph)}</div>
+      ${open?'':ICON.lock}<div class="glyph ${it.glyph.length>3?'xs':''}">${esc(it.glyph)}</div><div class="cname">${esc(ACT_NAME[it.id])}</div>
       <div class="lvl">${[0,1,2].map(i=>`<i class="${a.level>i||(a.level===2&&a.passed>0)?'f':''}"></i>`).join('')}</div></button>`}).join('')}
   </div></div>`);
   R=null;menuOf=which;
@@ -878,7 +905,7 @@ const GEN={
     choices:vals.map(v=>({html:v,ok:v===ans}))};
  }
 };
-const ACT_NAME={lsight:'Sight words',nseq:'Counting to 100',ltrace:'Tracing letters',ntrace:'Tracing numbers',lfind:'Find the letter',lsound:'Letter sounds',lword:'Build words',nfind:'Find the number',lmatch:'Big and small letters',ncompare:'Which has more',ncount:'Counting',nadd:'Adding',nsub:'Taking away',nmult:'Multiplying (groups, times tables, skip counting)'};
+const ACT_NAME={lsight: 'Read Words', 'nseq': 'Count to 100', 'ltrace': 'Trace Letters', 'ntrace': 'Trace Numbers', 'lfind': 'Find the Letter', 'lsound': 'Letter Sounds', 'lword': 'Build a Word', 'nfind': 'Find the Number', 'ncount': 'Count Them', 'nadd': 'Add Up', 'nsub': 'Take Away', 'nmult': 'Times and Groups', 'lmatch': 'Big and Small Letters', 'ncompare': 'More or Fewer?'};
 
 /* ---------- round engine ---------- */
 let R=null;
@@ -1144,7 +1171,7 @@ async function endQ(){
   sfx.ok();
   const me=R;
   if(q.kind==='build'){
-    await sayParts([...q.word.split('').map(l=>({sound:l})),300,q.word+'!',praise()]);
+    await sayParts([...q.word.split('').flatMap(l=>[{sound:l},120]),250,q.word+'!',praise()]);
   }else{
     await sayParts([praise()]);
   }
@@ -1156,7 +1183,7 @@ async function endQ(){
 }
 function answer(i){
   if(R.lock)return;const q=R.cur,c=q.choices[i],el=document.querySelector(`[data-act="ans"][data-i="${i}"]`);
-  if(c.ok){R.lock=true;el.classList.add('ok');endQ()}
+  if(c.ok){R.lock=true;el.classList.add('ok');sparks(el,10);endQ()}
   else{
     R.miss++;el.classList.add('wrong');el.disabled=true;sfx.no();react('no');
     if(R.miss>=2){const g=q.choices.findIndex(x=>x.ok);document.querySelector(`[data-act="ans"][data-i="${g}"]`).classList.add('hint');sayParts(["It's this one!"])}
