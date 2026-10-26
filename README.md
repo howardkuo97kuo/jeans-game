@@ -23,3 +23,6 @@ Princess extras: stars from every round unlock six gowns in the Gowns wardrobe; 
 
 ## Princess art
 `art/princess.png` is the original character artwork (background removed); `art/princess-head.png` is a head crop. The other files in `art/` are SVG redraws of the same character in different poses and gowns, generated from `princessSVG()` in `block-pals.html`.
+
+## Block art
+Letter and number blocks are pastel characters (card, big colored glyph, big eyes, arms, feet). `art/blocks.js` is the readable source of `blockSVG()` and `digitSVG()`; the same code is inlined in `block-pals.html`. Counting stacks still use cubes.

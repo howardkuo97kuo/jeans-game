@@ -1,5 +1,5 @@
 /* offline cache: network first so updates arrive, cached copy when there is no connection */
-const CACHE='blockpals-v3',CORE=['block-pals.html','clips.json','icon.svg','art/princess.png','art/princess-head.png','manifest.json'];
+const CACHE='blockpals-v4',CORE=['block-pals.html','clips.json','icon.svg','art/princess.png','art/princess-head.png','manifest.json'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
