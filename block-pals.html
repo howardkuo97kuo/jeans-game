@@ -1,7 +1,7 @@
 <meta charset="utf-8">
-<title>Block Pals</title>
+<title>Princess Pals</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#DCEFFF">
+<meta name="theme-color" content="#FFD6E7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
 <style>
 /* Layout: one full-height screen at a time; big colored "block" buttons with a thick bottom edge, voice does the instructing. Single bright look by choice. */
 :root{
-  --sky:#DCEFFF; --sky2:#BFE0FF; --ink:#1B2A55; --card:#FFFFFF; --muted:#5E6E9B;
+  --sky:#FFE9F2; --sky2:#F6C4D9; --ink:#1B2A55; --card:#FFFFFF; --muted:#5E6E9B;
   --red:#F2564B; --orange:#FF9A2E; --yellow:#FFC928; --green:#4CC152; --teal:#1FB6B6; --blue:#3D8BFF; --purple:#8E5BE8; --pink:#FF6FB1;
   --f-display:'Fredoka','Baloo 2','Trebuchet MS',system-ui,sans-serif;
   --f-body:'Nunito','Segoe UI',system-ui,sans-serif;
@@ -22,7 +22,7 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);
+body{margin:0;background:linear-gradient(180deg,#E9D8FF 0%,#FFD6E7 38%,#FFE7C9 72%,#FFF3DC 100%) fixed;color:var(--ink);font-family:var(--f-body);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-block:10px;user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow-x:hidden}
 #app{height:100%;display:flex;flex-direction:column;gap:12px;max-width:1280px;margin:0 auto}
@@ -297,6 +297,29 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .pat{display:flex;gap:clamp(6px,1.6vmin,14px);flex-wrap:wrap;justify-content:center;align-items:center;max-width:100%}
 .pat svg.art{width:clamp(34px,9vmin,76px);height:clamp(34px,9vmin,76px)}
 .patq{width:clamp(34px,9vmin,76px);height:clamp(34px,9vmin,76px);border-radius:14px;border:4px dashed var(--purple);display:grid;place-items:center;font:700 clamp(24px,6vmin,48px) var(--f-display);color:var(--purple)}
+.clockbig{width:clamp(130px,34vmin,300px);height:clamp(130px,34vmin,300px)}
+.digital{font:700 clamp(46px,14vmin,130px) var(--f-display);color:var(--ink);background:#fff;border-radius:24px;padding:4px 28px;box-shadow:0 6px 0 var(--sky2)}
+.tile.emoji svg.clk{width:88%;height:88%}
+.card .art svg.art{width:clamp(44px,12vmin,110px);height:clamp(44px,12vmin,110px)}
+.card .art .glyph.sm{font-size:clamp(28px,7vmin,60px)}
+.share{display:flex;flex-direction:column;align-items:center;gap:10px}
+.share .arow svg.art{width:clamp(20px,5.5vmin,40px);height:clamp(20px,5.5vmin,40px)}
+/* princess theme: sunset sky, castle, roses, butterflies */
+#sky{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#sky .castle{position:absolute;right:-2vmin;bottom:0;width:clamp(150px,34vmin,360px);opacity:.28}
+#sky .roses{position:absolute;left:0;bottom:-6px;display:flex;opacity:.45}
+#sky .roses svg{width:clamp(36px,9vmin,80px);height:clamp(36px,9vmin,80px);margin-right:-8px}
+#sky .bf{position:absolute;width:clamp(22px,5vmin,40px);animation:flutter var(--d,18s) linear infinite;animation-delay:var(--dl,0s);opacity:.8}
+@keyframes flutter{0%{transform:translate(-8vw,var(--y,40vh)) rotate(8deg) scale(.9)}25%{transform:translate(22vw,calc(var(--y,40vh) - 9vh)) rotate(-10deg) scale(1)}50%{transform:translate(52vw,calc(var(--y,40vh) + 5vh)) rotate(8deg) scale(.9)}75%{transform:translate(80vw,calc(var(--y,40vh) - 7vh)) rotate(-8deg) scale(1)}100%{transform:translate(108vw,var(--y,40vh)) rotate(6deg) scale(.9)}}
+.princess{display:block;width:100%;height:auto;overflow:visible}
+.princess-hero{width:clamp(110px,26vmin,240px);flex:none;animation:sway 3.6s ease-in-out infinite;transform-origin:50% 100%}
+.princess-hero.big{width:clamp(130px,30vmin,280px)}
+.splash .side{width:clamp(70px,16vmin,150px)}.splash .side svg{width:100%}
+.hello{display:flex;align-items:center;justify-content:center;gap:10px}
+.hphead{width:clamp(46px,9vmin,80px);display:inline-block}
+.buddy svg.phead{overflow:visible}
+@keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg) translateY(-6px)}}
+.bchar svg.princess{width:clamp(110px,26vmin,240px)}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
@@ -330,6 +353,13 @@ const SIGHT=[
 const CL={r:'#F2564B',o:'#FF9A2E',y:'#FFC928',g:'#4CC152',G:'#2E8F34',t:'#1FB6B6',b:'#3D8BFF',p:'#9B6BE8',k:'#FF7DB0',q:'#FFB5D2',w:'#FFFFFF',n:'#B77B45',d:'#7A4A2A',s:'#B8C2DA',i:'#1B2A55',l:'#FFE4B8'};
 const eyes2=(y,dx=12,r=4)=>`<circle cx="${50-dx}" cy="${y}" r="${r}" fill="{i}" stroke="none"/><circle cx="${50+dx}" cy="${y}" r="${r}" fill="{i}" stroke="none"/>`;
 const ART={
+crown:`<path d="M12 74L8 30L32 50L50 18L68 50L92 30L88 74Z" fill="{y}"/><rect x="12" y="72" width="76" height="14" rx="4" fill="{o}"/><circle cx="50" cy="20" r="6" fill="{r}"/><circle cx="8" cy="30" r="5" fill="{k}"/><circle cx="92" cy="30" r="5" fill="{k}"/><circle cx="30" cy="79" r="3.500" fill="{b}" stroke="none"/><circle cx="50" cy="79" r="3.500" fill="{r}" stroke="none"/><circle cx="70" cy="79" r="3.500" fill="{b}" stroke="none"/>`,
+castle:`<rect x="10" y="44" width="22" height="46" fill="{l}"/><rect x="68" y="44" width="22" height="46" fill="{l}"/><rect x="32" y="56" width="36" height="34" fill="{l}"/><rect x="38" y="20" width="24" height="46" fill="{l}"/><path d="M6 46L21 18L36 46Z" fill="{p}"/><path d="M64 46L79 18L94 46Z" fill="{p}"/><path d="M34 22L50 -2L66 22Z" fill="{r}"/><path d="M50 -2V-10" fill="none"/><path d="M42 90V76Q42 66 50 66Q58 66 58 76V90Z" fill="{d}"/><rect x="46" y="32" width="8" height="12" rx="4" fill="{b}"/><rect x="17" y="56" width="8" height="12" rx="4" fill="{b}"/><rect x="75" y="56" width="8" height="12" rx="4" fill="{b}"/>`,
+rose:`<path d="M50 60V94" fill="none" stroke="{G}" stroke-width="6"/><path d="M50 82Q70 70 84 78Q70 92 50 82Z" fill="{g}"/><circle cx="50" cy="36" r="30" fill="{r}"/><path d="M50 36m-20 0a20 20 0 0 1 40 0M50 36m-12 0a12 12 0 0 0 24 0M50 36m-6 0a6 6 0 0 1 12 0" fill="none" stroke-width="2.800"/>`,
+butterfly:`<path d="M50 50Q20 8 8 30Q4 52 50 54Z" fill="{k}"/><path d="M50 50Q80 8 92 30Q96 52 50 54Z" fill="{k}"/><path d="M50 56Q18 58 20 84Q36 94 50 62Z" fill="{p}"/><path d="M50 56Q82 58 80 84Q64 94 50 62Z" fill="{p}"/><ellipse cx="50" cy="54" rx="5" ry="22" fill="{i}"/><path d="M46 34Q40 20 34 18M54 34Q60 20 66 18" fill="none"/><circle cx="26" cy="34" r="6" fill="{y}" stroke="none"/><circle cx="74" cy="34" r="6" fill="{y}" stroke="none"/>`,
+wand:`<path d="M22 90L60 42" fill="none" stroke="{i}" stroke-width="12"/><path d="M22 90L60 42" fill="none" stroke="{p}" stroke-width="6"/><path d="M68 6L75 26L96 28L80 42L85 62L68 50L51 62L56 42L40 28L61 26Z" fill="{y}"/><circle cx="14" cy="24" r="3" fill="{k}" stroke="none"/><circle cx="30" cy="12" r="2.500" fill="{b}" stroke="none"/>`,
+gem:`<path d="M26 14H74L94 40L50 92L6 40Z" fill="{b}"/><path d="M6 40H94M26 14L38 40L50 14L62 40L74 14M38 40L50 92L62 40" fill="none" stroke-width="2.500"/><path d="M30 22L24 36" fill="none" stroke="{w}" stroke-width="3"/>`,
+carriage:`<path d="M12 62Q10 24 50 22Q90 24 88 62Q88 76 50 78Q12 76 12 62Z" fill="{o}"/><path d="M50 22V78M30 26Q22 50 30 76M70 26Q78 50 70 76" fill="none" stroke-width="2.500"/><path d="M50 22Q48 10 58 8" fill="none" stroke="{G}" stroke-width="4"/><rect x="34" y="36" width="32" height="20" rx="8" fill="{w}"/><circle cx="26" cy="82" r="13" fill="{y}"/><circle cx="74" cy="82" r="13" fill="{y}"/><circle cx="26" cy="82" r="4" fill="{i}" stroke="none"/><circle cx="74" cy="82" r="4" fill="{i}" stroke="none"/>`,
 apple:`<path d="M50 32C32 22 14 38 20 60 25 80 40 90 50 84 60 90 75 80 80 60 86 38 68 22 50 32Z" fill="{r}"/><path d="M50 32Q50 20 56 12" fill="none"/><path d="M54 24Q68 12 78 24Q64 34 54 24Z" fill="{g}"/><path d="M28 50Q30 42 36 38" fill="none" stroke="{w}" stroke-width="4"/>`,
 ant:`<path d="M30 62L20 82M45 64L45 84M60 62L70 82M72 40L62 24M84 42L90 26" fill="none"/><circle cx="24" cy="56" r="12" fill="{d}"/><circle cx="46" cy="56" r="10" fill="{d}"/><circle cx="72" cy="50" r="15" fill="{d}"/><circle cx="77" cy="46" r="3.5" fill="{w}" stroke="none"/>`,
 airplane:`<path d="M48 44L34 14H48L68 44Z" fill="{b}"/><path d="M48 60L34 90H48L68 60Z" fill="{b}"/><path d="M10 52Q10 42 28 42H70Q94 44 94 53Q94 62 70 62H28Q10 62 10 52Z" fill="{w}"/><path d="M14 46L8 28H20L28 44Z" fill="{b}"/><circle cx="78" cy="52" r="4" fill="{b}"/><circle cx="64" cy="52" r="3.5" fill="{b}"/>`,
@@ -695,6 +725,9 @@ function charSVG(L,glyph,mood){
 const blockFor=key=>{const [d,v]=key.split(':');return d==='L'?charSVG(v,v.toLowerCase()):stackSVG(+v,{col:+v-1})};
 
 /* ---------- screens ---------- */
+(function(){const s=document.createElement('div');s.id='sky';
+  s.innerHTML=`<div class="castle">${svgArt('castle')}</div><div class="roses">${svgArt('rose')}${svgArt('rose')}${svgArt('rose')}</div>`+[['butterfly',32,0,19],['butterfly',58,-7,23],['butterfly',20,-13,27]].map(([n,y,dl,d])=>`<div class="bf" style="--y:${y}vh;--dl:${dl}s;--d:${d}s">${svgArt(n)}</div>`).join('');
+  document.body.prepend(s)})();
 const app=$('#app');
 function render(html){app.innerHTML=html;app.scrollTop=0}
 const ibtn=(act,icon,label,arg='')=>`<button class="round" data-act="${act}" data-arg="${arg}" aria-label="${label}">${icon}</button>`;
@@ -707,8 +740,8 @@ function screenSetup(){
   <button class="btn" data-act="setup-save">Start</button></section></div>`);
 }
 function screenSplash(){
-  render(`<div class="splash"><div class="logo"><b>Block</b> <i>Pals</i></div>
-  <div class="row cast">${stackSVG(1,{col:0})}${stackSVG(3,{col:3})}${charSVG('A','A')}${stackSVG(5,{col:6})}${charSVG('b','b')}</div>
+  render(`<div class="splash"><div class="logo"><b>Princess</b> <i>Pals</i></div>
+  <div class="row cast"><div class="side">${charSVG('A','A')}</div><div class="princess-hero big">${princessSVG('happy')}</div><div class="side">${charSVG('b','b')}</div></div>
   <button class="bigplay" data-act="start" aria-label="Play">${ICON.play}</button></div>`);
 }
 function homeStickers(){
@@ -724,10 +757,13 @@ function goalRing(){
 }
 function screenHome(){
   stopSay();
-  render(`<div class="home"><div class="hellorow">${goalRing()}<div class="hello">Hi ${esc(nm())}!</div>${ibtn('music',S.music?ICON.music:ICON.musicOff,S.music?'Music on':'Music off')}</div>
+  render(`<div class="home"><div class="hellorow">${goalRing()}<div class="hello"><span class="hphead">${princessSVG('happy',{head:true})}</span>Hi ${esc(nm())}!</div>${ibtn('music',S.music?ICON.music:ICON.musicOff,S.music?'Music on':'Music off')}</div>
   <div class="cards">
    <button class="card" style="--c:${pal(5)[0]};--cd:${pal(5)[1]}" data-act="menu" data-arg="letters"><div class="art">${charSVG('a','A')}${charSVG('b','b')}</div><div class="glyph sm">Letters</div></button>
    <button class="card" style="--c:${pal(3)[0]};--cd:${pal(3)[1]}" data-act="menu" data-arg="numbers"><div class="art">${stackSVG(3,{col:5,face:false})}${stackSVG(7,{col:1,face:false})}</div><div class="glyph sm">Numbers</div></button>
+   <button class="card" style="--c:${pal(6)[0]};--cd:${pal(6)[1]}" data-act="menu" data-arg="multiply"><div class="art">${stackSVG(3,{col:2,face:false})}<span class="glyph sm">×</span>${stackSVG(4,{col:4,face:false})}</div><div class="glyph sm">Multiply</div></button>
+   <button class="card" style="--c:${pal(4)[0]};--cd:${pal(4)[1]}" data-act="menu" data-arg="time"><div class="art">${clockSVG(3,0)}${clockSVG(6,30)}</div><div class="glyph sm">Time</div></button>
+   <button class="card" style="--c:${pal(1)[0]};--cd:${pal(1)[1]}" data-act="menu" data-arg="animals"><div class="art">${svgArt('elephant')}${svgArt('lion')}${svgArt('frog')}</div><div class="glyph sm">Animals</div></button>
    <button class="card" style="--c:${pal(0)[0]};--cd:${pal(0)[1]}" data-act="menu" data-arg="shapes"><div class="art">${shapeSVG('circle','yellow')}${shapeSVG('triangle','green')}${shapeSVG('square','blue')}</div><div class="glyph sm">Shapes</div></button>
    <button class="card" style="--c:${pal(7)[0]};--cd:${pal(7)[1]}" data-act="stickers"><div class="art stkart">${homeStickers()}</div><div class="glyph sm">${stickerCount()} / ${STK_TOTAL}</div></button>
    <button class="card" style="--c:${pal(6)[0]};--cd:${pal(6)[1]}" data-act="blocks"><div class="art">${stackSVG(4,{col:2})}</div><div class="glyph sm">${S.unlocked.length} / 46</div></button>
@@ -749,10 +785,22 @@ const MENUS={
   {id:'ncompare',c:1,glyph:'5 > 3',gate:'ncount'},
   {id:'nadd',c:3,glyph:'2 + 3',gate:'ncount'},
   {id:'nsub',c:4,glyph:'5 − 2',gate:'nadd'},
-  {id:'nmult',c:6,glyph:'3 × 2',gate:'nsub'},
   {id:'ntrace',c:5,glyph:'✏️7',gate:null},
   {id:'nseq',c:1,glyph:'1→100',gate:null}]}
 };
+MENUS.multiply={title:'Multiply',items:[
+  {id:'nmult',c:6,glyph:'3 × 2',gate:'nsub'},
+  {id:'nrepeat',c:2,glyph:'4+4+4',gate:'nmult'},
+  {id:'narray',c:5,glyph:'▦ 3×4',gate:'nmult'},
+  {id:'ntimes',c:0,glyph:'6 × 7',gate:'nmult'},
+  {id:'nshare',c:3,glyph:'12 ÷ 3',gate:'nmult'}]};
+MENUS.time={title:'Time',items:[
+  {id:'ttime',c:5,glyph:'🕒 ?',gate:null},
+  {id:'tmatch',c:1,glyph:'3:30 → 🕒',gate:'ttime'}]};
+MENUS.animals={title:'Animals',items:[
+  {id:'anames',c:3,glyph:'🐘 ?',gate:null},
+  {id:'asound',c:0,glyph:'🔊 woof',gate:null},
+  {id:'ahome',c:6,glyph:'🐸 → 🌿',gate:'anames'}]};
 MENUS.shapes={title:'Shapes',items:[
   {id:'sshape',c:3,glyph:'▲ ● ■',gate:null},
   {id:'spattern',c:6,glyph:'● ■ ● ?',gate:'sshape'}]};
@@ -782,6 +830,61 @@ const SH_COL=[{n:'red',c:'#F2564B'},{n:'blue',c:'#3D8BFF'},{n:'yellow',c:'#FFC92
 const SH_SHAPES=[{n:'circle'},{n:'square'},{n:'triangle'},{n:'star'},{n:'heart'},{n:'rectangle'},{n:'oval'},{n:'diamond'}];
 const SH_PATH={circle:'<circle cx="50" cy="50" r="38"/>',square:'<rect x="14" y="14" width="72" height="72" rx="6"/>',triangle:'<path d="M50 10L92 86H8Z"/>',star:'<path d="M50 6L62 36L94 38L69 58L77 90L50 72L23 90L31 58L6 38L38 36Z"/>',heart:'<path d="M50 88C10 58 6 32 22 20Q38 10 50 30Q62 10 78 20Q94 32 90 58Q80 74 50 88Z"/>',rectangle:'<rect x="6" y="26" width="88" height="48" rx="6"/>',oval:'<ellipse cx="50" cy="50" rx="44" ry="28"/>',diamond:'<path d="M50 6L90 50L50 94L10 50Z"/>'};
 const shapeSVG=(s,col)=>{const c=(SH_COL.find(x=>x.n===col)||{c:'#B8C2DA'}).c;return `<svg viewBox="0 0 100 100" class="art" aria-hidden="true"><g fill="${c}" stroke="#1B2A55" stroke-width="3.5" stroke-linejoin="round">${SH_PATH[s]}</g></svg>`};
+
+/* ---------- the princess: original character, brown hair, gold tiara, red and gold gown ---------- */
+function princessSVG(mood,opts={}){
+  const happy=mood==='happy',oops=mood==='oops',up=!!opts.up,head=!!opts.head;
+  const sk='#FFD9B8',hair='#6B3E26',I='#1B2A55';
+  const arms=up?`<path d="M31 68Q15 56 17 38M69 68Q85 56 83 38" fill="none" stroke="${I}" stroke-width="9" stroke-linecap="round"/><path d="M31 68Q15 56 17 38M69 68Q85 56 83 38" fill="none" stroke="${sk}" stroke-width="5.500" stroke-linecap="round"/><circle cx="17" cy="37" r="5" fill="${sk}" stroke="${I}" stroke-width="2"/><circle cx="83" cy="37" r="5" fill="${sk}" stroke="${I}" stroke-width="2"/>`
+    :`<path d="M30 70Q20 84 30 94M70 70Q80 84 70 94" fill="none" stroke="${I}" stroke-width="9" stroke-linecap="round"/><path d="M30 70Q20 84 30 94M70 70Q80 84 70 94" fill="none" stroke="${sk}" stroke-width="5.500" stroke-linecap="round"/>`;
+  const eyes=oops?`<path d="M36 33L46 36M64 33L54 36" stroke="${I}" stroke-width="2.200" stroke-linecap="round"/>`:'';
+  const mouth=happy?`<path d="M42 47Q50 58 58 47Z" fill="#B83A30" stroke="${I}" stroke-width="1.800" stroke-linejoin="round"/><path d="M45 51Q50 54 55 51" fill="#FF8FA0" stroke="none"/>`:oops?`<ellipse cx="50" cy="51" rx="3.500" ry="2.500" fill="#B83A30" stroke="${I}" stroke-width="1.500"/>`:`<path d="M43 48Q50 54 57 48" fill="none" stroke="${I}" stroke-width="2.200" stroke-linecap="round"/>`;
+  const body=head?'':`<defs><linearGradient id="pgs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2564B"/><stop offset=".55" stop-color="#FF9A2E"/><stop offset="1" stop-color="#FFC928"/></linearGradient></defs>
+    <path d="M26 34Q14 72 20 102Q30 112 40 98L42 60H58L60 98Q70 112 80 102Q86 72 74 34Z" fill="${hair}" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/>
+    <path d="M36 76Q8 98 3 126H97Q92 98 64 76Z" fill="url(#pgs)" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/>
+    <path d="M10 112Q50 126 90 112" fill="none" stroke="#FFE08A" stroke-width="3"/><path d="M26 98Q50 108 74 98" fill="none" stroke="#FFE08A" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round"/>
+    ${arms}
+    <path d="M35 60H65L68 82Q50 90 32 82Z" fill="#E8412F" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/><path d="M50 62V84" stroke="#FFE08A" stroke-width="3"/><path d="M33 80Q50 88 67 80" fill="none" stroke="#FFC928" stroke-width="4"/>
+    <circle cx="29" cy="64" r="8.500" fill="#FF9A2E" stroke="${I}" stroke-width="2.200"/><circle cx="71" cy="64" r="8.500" fill="#FF9A2E" stroke="${I}" stroke-width="2.200"/>
+    <rect x="45" y="52" width="10" height="12" fill="${sk}"/><path d="M40 62Q50 70 60 62" fill="none" stroke="#FFC928" stroke-width="2.500" stroke-linecap="round"/><circle cx="50" cy="68" r="2.500" fill="#F2564B"/>`;
+  const face=`<path d="M26 34Q14 54 20 70Q28 74 36 62L38 40H62L64 62Q72 74 80 70Q86 54 74 34Z" fill="${hair}" stroke="none"/>
+    <circle cx="50" cy="38" r="21" fill="${sk}" stroke="${I}" stroke-width="2.500"/>
+    <path d="M29 38Q30 14 50 14Q70 14 71 38Q62 24 50 26Q38 24 29 38Z" fill="${hair}" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/>
+    <path d="M70 26Q80 24 80 32Q76 36 72 34Z" fill="#FF7DB0" stroke="${I}" stroke-width="1.500"/><circle cx="75" cy="29" r="2.500" fill="#FFC928"/>
+    <path d="M35 19L36 8L43 14L50 4L57 14L64 8L65 19Z" fill="#FFC928" stroke="${I}" stroke-width="2.200" stroke-linejoin="round"/><circle cx="50" cy="12" r="3" fill="#F2564B" stroke="${I}" stroke-width="1.200"/>
+    <ellipse cx="42" cy="40" rx="4.800" ry="5.800" fill="#fff" stroke="${I}" stroke-width="1.500"/><ellipse cx="58" cy="40" rx="4.800" ry="5.800" fill="#fff" stroke="${I}" stroke-width="1.500"/>
+    <circle cx="42.500" cy="41" r="3.300" fill="#3B2314"/><circle cx="58.500" cy="41" r="3.300" fill="#3B2314"/><circle cx="43.800" cy="39.300" r="1.200" fill="#fff"/><circle cx="59.800" cy="39.300" r="1.200" fill="#fff"/>
+    ${eyes}<circle cx="35" cy="47" r="3.600" fill="#FF9AA8" opacity=".6"/><circle cx="65" cy="47" r="3.600" fill="#FF9AA8" opacity=".6"/>
+    ${mouth}<circle cx="30" cy="46" r="2" fill="#F2564B" stroke="${I}" stroke-width="1"/><circle cx="70" cy="46" r="2" fill="#F2564B" stroke="${I}" stroke-width="1"/>`;
+  return `<svg viewBox="${head?'12 0 76 62':'0 0 100 130'}" class="princess ${head?'phead':''}" aria-hidden="true">${body}${face}</svg>`;
+}
+/* ---------- time, animals ---------- */
+const timeStr=(h,m)=>`${h}:${String(m).padStart(2,'0')}`;
+const timeWords=(h,m)=>m===0?`${NUMW[h]} o'clock`:m===30?`half past ${NUMW[h]}`:m===15?`quarter past ${NUMW[h]}`:m===45?`quarter to ${NUMW[h%12+1]}`:`${NUMW[h]} ${numWords(m)}`;
+function randTime(lv){
+  const h=1+rnd(12);
+  if(lv===0)return [h,0];
+  if(lv===1)return [h,pick([0,30])];
+  return [h,pick([0,15,30,45,15,45,5,10,20,25,35,40,50,55])];
+}
+function timeOpts(h,m,lv,n){
+  const seen=new Set([h+':'+m]),out=[[h,m]];
+  const cand=[[h,m===0?30:0],[h%12+1,m],[(h+10)%12+1,m]];
+  if(lv>=1&&m!==0)cand.push([m/5||12,(h%12)*5],[h,m===30?0:30]);
+  if(lv>=2)cand.push([h,(m+15)%60],[h,(m+45)%60]);
+  shuffle(cand).forEach(c=>{const k=c[0]+':'+c[1];if(out.length<n&&!seen.has(k)){seen.add(k);out.push(c)}});
+  let g=0;while(out.length<n&&g++<40){const c=randTime(lv),k=c[0]+':'+c[1];if(!seen.has(k)){seen.add(k);out.push(c)}}
+  return shuffle(out);
+}
+function clockSVG(h,m){
+  const ha=((h%12)+m/60)*30,ma=m*6,pt=(a,r)=>[50+r*Math.sin(a*Math.PI/180),50-r*Math.cos(a*Math.PI/180)];
+  const nums=Array.from({length:12},(_,i)=>{const [x,y]=pt((i+1)*30,36);return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#1B2A55" stroke="none" font-family="Fredoka,sans-serif">${i+1}</text>`}).join('');
+  const [hx,hy]=pt(ha,22),[mx,my]=pt(ma,32);
+  return `<svg viewBox="0 0 100 100" class="art clk" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#1B2A55" stroke-width="4"/><circle cx="50" cy="50" r="46" fill="none" stroke="#FFC928" stroke-width="2" opacity=".0"/>${nums}<path d="M50 50L${mx.toFixed(1)} ${my.toFixed(1)}" stroke="#3D8BFF" stroke-width="3.5" stroke-linecap="round"/><path d="M50 50L${hx.toFixed(1)} ${hy.toFixed(1)}" stroke="#F2564B" stroke-width="5.5" stroke-linecap="round"/><circle cx="50" cy="50" r="4" fill="#1B2A55"/></svg>`;
+}
+const ANI={dog:{snd:'woof',home:'house'},cat:{snd:'meow',home:'house'},rabbit:{home:'house'},mouse:{snd:'squeak',home:'house'},pig:{snd:'oink',home:'farm'},goat:{snd:'maa',home:'farm'},horse:{snd:'neigh',home:'farm'},duck:{snd:'quack',home:'pond'},frog:{snd:'ribbit',home:'pond'},
+  elephant:{snd:'toot',home:'jungle'},lion:{snd:'roar',home:'jungle'},monkey:{snd:'ooh ooh',home:'jungle'},zebra:{home:'jungle'},tiger:{home:'jungle'},bear:{snd:'grr',home:'forest'},owl:{snd:'hoot',home:'forest'},fish:{home:'sea'},whale:{home:'sea'},octopus:{home:'sea'},jellyfish:{home:'sea'}};
+const HOMEN={house:'house',farm:'farm',pond:'pond',jungle:'jungle',forest:'forest',sea:'sea'};
 const GEN={
  lfind(lv,fixed){
   const L=fixed||pick(AZ),n=[3,4,6][lv];
@@ -902,6 +1005,76 @@ const GEN={
     stage:`<div class="pat">${shown.map(c=>shapeSVG(shp,c)).join('')}<span class="patq">?</span></div>`,
     choices:opts.map(c=>({html:shapeSVG(shp,c),emoji:1,ok:c===ans}))};
  },
+
+ ttime(lv,fixed){
+  const [hh,mm]=fixed?fixed.split(':').map(Number):randTime(lv);
+  const opts=timeOpts(hh,mm,lv,lv===0?3:4);
+  return {key:`${hh}:${mm}`,say:['What time is it?'],stage:`<div class="clockbig mascot">${clockSVG(hh,mm)}</div>`,
+    choices:opts.map(t=>({html:timeStr(t[0],t[1]),word:1,ok:t[0]===hh&&t[1]===mm}))};
+ },
+ tmatch(lv,fixed){
+  const [hh,mm]=fixed?fixed.split(':').map(Number):randTime(lv);
+  const opts=timeOpts(hh,mm,lv,lv===0?3:4);
+  return {key:`${hh}:${mm}`,say:['Find the clock that shows',timeWords(hh,mm)],stage:`<div class="digital mascot">${timeStr(hh,mm)}</div>`,
+    choices:opts.map(t=>({html:clockSVG(t[0],t[1]),emoji:1,ok:t[0]===hh&&t[1]===mm}))};
+ },
+ anames(lv,fixed){
+  const a=fixed&&ANI[fixed]?fixed:pick(Object.keys(ANI)),n=lv===0?3:4;
+  if(lv<2){const others=shuffle(Object.keys(ANI).filter(x=>x!==a)).slice(0,n-1);
+    return {key:a,say:['Find the',a],stage:`<div class="mascot">${charSVG(a[0],'?')}</div>`,reveal:charSVG(a[0],a[0]),
+      choices:shuffle([a,...others]).map(x=>({html:svgArt(x),emoji:1,ok:x===a}))};}
+  const others=shuffle(Object.keys(ANI).filter(x=>x!==a&&x[0]!==a[0]||x[0]===a[0]&&x!==a)).slice(0,3);
+  return {key:a,say:['What animal is this?'],stage:`<div class="pic-big mascot">${svgArt(a)}</div>`,
+    choices:shuffle([a,...others]).map(x=>({html:esc(x),word:1,ok:x===a}))};
+ },
+ asound(lv,fixed){
+  const pool=Object.keys(ANI).filter(x=>ANI[x].snd),a=fixed&&ANI[fixed]&&ANI[fixed].snd?fixed:pick(pool),n=lv===0?3:4;
+  const others=shuffle(pool.filter(x=>x!==a)).slice(0,n-1);
+  return {key:a,say:['Which animal says',ANI[a].snd+'?'],stage:`<div class="digital mascot">${lv<2?esc(ANI[a].snd)+'!':'?'}</div>`,
+    reveal:`<div class="pic-big">${svgArt(a)}</div>`,
+    choices:shuffle([a,...others]).map(x=>({html:svgArt(x),emoji:1,ok:x===a}))};
+ },
+ ahome(lv,fixed){
+  const a=fixed&&ANI[fixed]?fixed:pick(Object.keys(ANI)),home=ANI[a].home;
+  const homes=[...new Set(Object.values(ANI).map(x=>x.home))],n=lv===0?3:4;
+  const others=shuffle(homes.filter(x=>x!==home)).slice(0,n-1);
+  return {key:a,say:[`Where does the ${a} live?`],stage:`<div class="pic-big mascot">${svgArt(a)}</div>`,
+    choices:shuffle([home,...others]).map(x=>({html:esc(HOMEN[x]),word:1,ok:x===home}))};
+ },
+ ntimes(lv,fixed){
+  let a,b,miss;
+  if(fixed){[a,b,miss]=fixed.split('x').map(Number)}
+  else{a=pick(lv===0?[2,5,10]:lv===1?[2,3,4,5,10]:[2,3,4,5,6,7,8,9,10]);b=1+rnd(lv===0?5:10);miss=lv===0?0:(Math.random()<.4?1:0)}
+  const p=a*b,ans=miss?b:p,vals=miss?uniqueNear(b,4,1,12,3):shuffle([p,...shuffle([...new Set([a+b,p+a,Math.max(1,p-a),p+b,p+1,Math.max(1,p-1)])].filter(x=>x!==p)).slice(0,3)]);
+  const eq=miss?`<span>${a}</span><span>×</span><span class="q">?</span><span>=</span><span>${p}</span>`:`<span>${a}</span><span>×</span><span>${b}</span><span>=</span><span class="q">?</span>`;
+  return {key:`${a}x${b}x${miss}`,say:miss?[`${NUMW[a]} times what makes ${numWords(p)}?`]:[`${NUMW[a]} times ${NUMW[b]}.`,'What does it make?'],
+    stage:`<div class="eq">${eq}</div>`,choices:vals.map(v=>({html:v,ok:v===ans}))};
+ },
+ narray(lv,fixed){
+  let r,c;if(fixed){[r,c]=fixed.split('x').map(Number)}else{r=2+rnd(lv===0?2:4);c=2+rnd(lv===0?3:5)}
+  const e=OBJ[(r+c)%OBJ.length],ans=`${r} × ${c}`,set=new Set([ans]);
+  [[r,c+1],[r+1,c],[c,r+1],[r,c-1],[r-1,c]].forEach(([x,y])=>{if(x>1&&y>1&&x*y!==r*c&&set.size<(lv===0?3:4))set.add(`${x} × ${y}`)});
+  let g=0;while(set.size<(lv===0?3:4)&&g++<30){const x=2+rnd(5),y=2+rnd(6);if(x*y!==r*c)set.add(`${x} × ${y}`)}
+  return {key:`${r}x${c}`,say:['Which times sum matches the rows and columns?'],
+    stage:`<div class="array">${Array.from({length:r},()=>`<div class="arow">${Array.from({length:c},()=>svgArt(e)).join('')}</div>`).join('')}</div>`,
+    choices:shuffle([...set]).map(s=>({html:s,word:1,ok:s===ans}))};
+ },
+ nrepeat(lv,fixed){
+  let g,s;if(fixed){[g,s]=fixed.split('x').map(Number)}else{s=pick(lv===0?[2,3,5]:[2,3,4,5,10]);g=2+rnd(lv===0?3:4)}
+  const rep=(n,x)=>Array(n).fill(x).join(' + '),ans=rep(g,s),set=new Set([ans]);
+  [[g+1,s],[g-1,s],[g,s+1],[s,g+1]].forEach(([n,x])=>{if(n>=2&&x>=1&&n*x!==g*s&&set.size<(lv===0?3:4))set.add(rep(n,x))});
+  let k=0;while(set.size<(lv===0?3:4)&&k++<30){const n=2+rnd(4),x=2+rnd(5);if(n*x!==g*s)set.add(rep(n,x))}
+  return {key:`${g}x${s}`,say:[`${g===1?'One group':NUMW[g]+' groups'} of ${NUMW[s]}.`,'Which adding sum matches?'],
+    stage:`<div class="groups">${Array.from({length:g},(_,i)=>`<div>${stackSVG(s,{col:i+1,face:false})}</div>`).join('')}</div><div class="eq"><span>${g}</span><span>groups of</span><span>${s}</span></div>`,
+    choices:shuffle([...set]).map(t=>({html:t,word:1,ok:t===ans}))};
+ },
+ nshare(lv,fixed){
+  let k,each;if(fixed){[k,each]=fixed.split('x').map(Number)}else{k=pick(lv===0?[2]:lv===1?[2,3,5]:[2,3,4,5]);each=1+rnd(lv===0?5:lv===1?6:8)}
+  const tot=k*each,e=pick(OBJ),vals=uniqueNear(each,lv===0?3:4,1,12,2);
+  return {key:`${k}x${each}`,say:[`${numWords(tot)} things are shared equally between ${NUMW[k]} friends.`,'How many does each friend get?'],
+    stage:`<div class="share"><div class="array"><div class="arow" style="flex-wrap:wrap;justify-content:center;max-width:90vw">${Array.from({length:tot},()=>svgArt(e)).join('')}</div></div><div class="eq"><span>${tot}</span><span>÷</span><span>${k}</span><span>=</span><span class="q">?</span></div></div>`,
+    choices:vals.map(v=>({html:v,ok:v===each}))};
+ },
  ncompare(lv,fixed){
   const hi=[10,15,20][lv],e=pick(OBJ),k=lv===2?3:2;let counts,more=lv===0||Math.random()<.6;
   if(fixed){const p=fixed.split(':');more=p[0]==='m';counts=p[1].split('v').map(Number)}
@@ -964,7 +1137,7 @@ const GEN={
     choices:vals.map(v=>({html:v,ok:v===ans}))};
  }
 };
-const ACT_NAME={sshape:'Shapes and Colours',spattern:'What Comes Next?',lsight: 'Read Words', 'nseq': 'Count to 100', 'ltrace': 'Trace Letters', 'ntrace': 'Trace Numbers', 'lfind': 'Find the Letter', 'lsound': 'Letter Sounds', 'lword': 'Build a Word', 'nfind': 'Find the Number', 'ncount': 'Count Them', 'nadd': 'Add Up', 'nsub': 'Take Away', 'nmult': 'Times and Groups', 'lmatch': 'Big and Small Letters', 'ncompare': 'More or Fewer?'};
+const ACT_NAME={ttime:'Read the Clock',tmatch:'Find the Clock',anames:'Name the Animal',asound:'Animal Sounds',ahome:'Where Animals Live',ntimes:'Times Tables',narray:'Rows and Columns',nrepeat:'Add It Up Fast',nshare:'Share Equally',sshape:'Shapes and Colours',spattern:'What Comes Next?',lsight: 'Read Words', 'nseq': 'Count to 100', 'ltrace': 'Trace Letters', 'ntrace': 'Trace Numbers', 'lfind': 'Find the Letter', 'lsound': 'Letter Sounds', 'lword': 'Build a Word', 'nfind': 'Find the Number', 'ncount': 'Count Them', 'nadd': 'Add Up', 'nsub': 'Take Away', 'nmult': 'Times and Groups', 'lmatch': 'Big and Small Letters', 'ncompare': 'More or Fewer?'};
 
 /* ---------- round engine ---------- */
 let R=null;
@@ -994,12 +1167,12 @@ function react(kind){
   const b=$('#buddy'),m=document.querySelector('.stage .mascot');
   if(b&&R.buddy){
     const L=R.buddy;
-    b.innerHTML=charSVG(L,L.toLowerCase(),kind==='no'?'oops':kind==='nudge'?undefined:'happy');
+    b.innerHTML=princessSVG(kind==='no'?'oops':kind==='nudge'?'n':'happy',{head:true});
     b.classList.remove('cheer','wobble','dance','nudge');void b.offsetWidth;
     b.classList.add(kind==='ok'?'cheer':kind==='dance'?'dance':kind==='nudge'?'nudge':'wobble');
     if(kind==='ok'||kind==='dance')sparks(b,kind==='dance'?14:8);else if(kind==='nudge')sparks(b,3);
     clearTimeout(b._t);
-    b._t=setTimeout(()=>{b.innerHTML=charSVG(L,L.toLowerCase());b.classList.remove('cheer','wobble','dance','nudge')},kind==='dance'?1500:1000);
+    b._t=setTimeout(()=>{b.innerHTML=princessSVG('n',{head:true});b.classList.remove('cheer','wobble','dance','nudge')},kind==='dance'?1500:1000);
   }
   if(m){m.classList.remove('hop','wobble');void m.offsetWidth;m.classList.add(kind==='no'?'wobble':'hop')}
 }
@@ -1187,7 +1360,7 @@ function renderQ(){
     ch=q.choices.map((c,i)=>{const [bg,bd]=c.bg||pal(R.paletteShift+i);return `<button class="tile ${c.emoji?'emoji':''} ${c.word?'word':''} ${c.grp?'grp':''}" data-act="ans" data-i="${i}" style="--c:${bg};--cd:${bd}">${c.html}</button>`}).join('');
   }
   const slots=q.kind==='build'?`<div class="slots" id="slots">${q.word.split('').map(()=>'<div class="slot"></div>').join('')}</div>`:'';
-  render(`<div class="topbar">${ibtn('leave',ICON.back,'Back')}<div class="pips">${pips}</div><div class="buddy" id="buddy">${charSVG(R.buddy,R.buddy.toLowerCase())}</div>${ibtn('replay',ICON.speaker,'Hear again')}</div>
+  render(`<div class="topbar">${ibtn('leave',ICON.back,'Back')}<div class="pips">${pips}</div><div class="buddy" id="buddy">${princessSVG('n',{head:true})}</div>${ibtn('replay',ICON.speaker,'Hear again')}</div>
   <div class="stage">${q.stage}${slots}</div><div class="choices" id="choices">${ch}</div>`);
   setTimeout(()=>{if(R&&R.cur===q)sayParts(q.say)},300);
   startTimer(q);
@@ -1278,7 +1451,7 @@ function finishRound(){
   else{a.streak=0;if(f<=3&&a.level>0){a.low=(a.low||0)+1;if(a.low>=2){a.level--;a.low=0}}else a.low=0}
   R.missed.forEach(k=>{if(!a.weak.includes(k))a.weak.push(k)});
   a.weak=a.weak.filter(k=>!R.cleared.includes(k)||R.missed.includes(k)).slice(-12);
-  const dom=R.id[0]==='s'?null:R.id[0]==='l'?'L':'N';
+  const dom=/^[sta]/.test(R.id)?null:R.id[0]==='l'?'L':'N';
   const all=!dom?[]:dom==='L'?AZ.map(x=>'L:'+x):Array.from({length:20},(_,i)=>'N:'+(i+1));
   const next=all.find(k=>!S.unlocked.includes(k));
   if(next)S.unlocked.push(next);
@@ -1299,7 +1472,7 @@ function celebrate({stars,next,leveled,f,id,aw,bonus,combo,speedy}){
   const who=next?nameOf(next):null;
   render(`<div class="celebrate"><div class="confetti">${conf}</div>
    <div class="stars">${[0,1,2].map(i=>ICON.star(i<stars)).join('')}</div>
-   <div class="row cast">${next?`<div class="hero" data-act="hello" data-arg="${next}">${blockFor(next)}</div>`:''}${aw?`<div class="hero2">${stickerHTML(aw.id,{shiny:aw.shiny,big:true})}</div>`:''}${bonus?`<div class="hero2">${stickerHTML(bonus,{shiny:true,big:true})}</div>`:''}</div>
+   <div class="row cast"><div class="princess-hero">${princessSVG('happy',{up:true})}</div>${next?`<div class="hero" data-act="hello" data-arg="${next}">${blockFor(next)}</div>`:''}${aw?`<div class="hero2">${stickerHTML(aw.id,{shiny:aw.shiny,big:true})}</div>`:''}${bonus?`<div class="hero2">${stickerHTML(bonus,{shiny:true,big:true})}</div>`:''}</div>
    <div class="row">${next?'<div class="badge">New block!</div>':'<div class="badge">You have every block!</div>'}${aw?`<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">${aw.shiny?'Shiny sticker!':'New sticker!'}</div>`:''}${leveled?'<div class="badge" style="background:var(--green);color:#fff;box-shadow:0 4px 0 #2E8F34">Level up!</div>':''}${combo>=4?`<div class="badge" style="background:var(--orange);color:#fff;box-shadow:0 4px 0 #C46E10">${combo} in a row!</div>`:''}${speedy>=4?'<div class="badge" style="background:var(--blue);color:#fff;box-shadow:0 4px 0 #21509E">Speedy!</div>':''}${bonus?'<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">Bonus sticker!</div>':''}</div>
    ${aw&&aw.medals.length?`<div class="row">${aw.medals.map(m=>stickerHTML(m,{shiny:true})).join('')}<div class="badge" style="background:var(--purple);color:#fff;box-shadow:0 4px 0 #6139B0">Special sticker!</div></div>`:''}
    <div class="actions">${ibtn('again',ICON.playDark,'Play again',id)}${ibtn('menu-back',ICON.back,'Back')}${ibtn('home',ICON.home,'Home')}${ibtn('blocks',ICON.blocks,'My blocks')}${ibtn('stickers',ICON.book,'Sticker book')}</div></div>`);
@@ -1323,9 +1496,10 @@ const SP=[
  {id:'Pets',icon:'dog',art:true,list:['dog','cat','rabbit','pig','duck','frog','mouse','goat']},
  {id:'Zoo',icon:'lion',art:true,list:['elephant','lion','monkey','zebra','tiger','bear','owl','horse']},
  {id:'Fruit',icon:'strawberry',art:true,list:['apple','banana','grapes','orange','pear','watermelon','strawberry','cherry']},
- {id:'Vehicles',icon:'bus',art:true,list:['car','bus','train','airplane','yacht','van','bicycle','firetruck']}
+ {id:'Vehicles',icon:'bus',art:true,list:['car','bus','train','airplane','yacht','van','bicycle','firetruck']},
+ {id:'Princess',icon:'crown',art:true,list:['crown','castle','rose','butterfly','wand','gem','carriage','unicorn']}
 ];
-const SORDER=[0,1,2,3,4,5,6,8,9,10,11,7];
+const SORDER=[12,0,1,2,3,4,5,6,8,9,10,11,7];
 const stkFace=(p,j)=>SP[p].art?svgArt(SP[p].list[j]):SP[p].list[j];
 const stkIcon=p=>SP[p].art?svgArt(SP[p].icon):SP[p].icon;
 function bonusSticker(){
@@ -1333,9 +1507,9 @@ function bonusSticker(){
   const un=all.filter(id=>!S.stickers[id]),id=pick(un.length?un:all);
   const st=S.stickers[id]||(S.stickers[id]={n:0,shiny:false});st.n++;st.shiny=true;S.newStickers.push(id);return id;
 }
-const MEDALS=['First round finished','A perfect round','Moved up a level','Tried every activity','Five perfect rounds','Played three days in a row','100 questions answered','Ten blocks collected'];
+const MEDALS=['First round finished','A perfect round','Moved up a level','Tried ten activities','Five perfect rounds','Played three days in a row','100 questions answered','Ten blocks collected'];
 const STK_TOTAL=SP.length*8;
-let spage=0;
+let spage=12;
 const stickerCount=()=>Object.keys(S.stickers||{}).length;
 function awardStickers(stars,f,leveled){
   S.stickers=S.stickers||{};S.newStickers=S.newStickers||[];
@@ -1345,7 +1519,7 @@ function awardStickers(stars,f,leveled){
   st.n++;if(stars===3)st.shiny=true;S.newStickers.push(id);
   if(f===8)S.perfects=(S.perfects||0)+1;
   const pd=progressData(),medals=[];
-  const earned=[true,f===8,leveled,pd.ids.every(x=>A(x).rounds>=1),(S.perfects||0)>=5,pd.streak>=3,pd.asked>=100,S.unlocked.length>=10];
+  const earned=[true,f===8,leveled,pd.ids.filter(x=>A(x).rounds>=1).length>=10,(S.perfects||0)>=5,pd.streak>=3,pd.asked>=100,S.unlocked.length>=10];
   earned.forEach((ok,i)=>{const mid='7:'+i;if(ok&&!S.stickers[mid]){S.stickers[mid]={n:1,shiny:true};S.newStickers.push(mid);medals.push(mid)}});
   return {id,shiny:stars===3,medals};
 }
@@ -1441,7 +1615,7 @@ function screenBreak(){
   const L=pickBuddy(),total=Math.max(3,S.breakLen*60),t0=Date.now();let step=-1;
   const C=2*Math.PI*44;
   render(`<div class="breakscreen"><div class="bubble">Break time!</div>
-   <div class="bchar" id="bchar">${charSVG(L,L.toLowerCase())}</div>
+   <div class="bchar" id="bchar">${princessSVG('happy',{up:true})}</div>
    <div class="bring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="none" stroke="#fff" stroke-width="9"/><circle id="bprog" cx="50" cy="50" r="44" fill="none" stroke="#4CC152" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="0" transform="rotate(-90 50 50)"/></svg><span id="bleft"></span></div>
    <button class="bigplay" id="bplay" data-act="breakend" aria-label="Play again" hidden>${ICON.play}</button></div>
    <button class="gear" id="gear" aria-label="Grown-ups: press and hold to end the break">${ICON.gear}</button>`);
@@ -1488,6 +1662,9 @@ function prettyKey(id,k){
    case 'ncount':return `Counting ${k} things`;
    case 'sshape':{const p=k.split(':');return p[0]==='m'?`${p[1]} ${p[2]}`:p[1]}
    case 'spattern':return `Pattern ${k.split(':')[0]}`;
+   case 'ttime':case 'tmatch':{const [a,b]=k.split(':');return `Clock ${a}:${String(b).padStart(2,'0')}`}
+   case 'ntimes':{const [a,b,m]=k.split('x');return +m?`${a} × ? = ${a*b}`:`${a} × ${b}`}
+   case 'narray':case 'nshare':case 'nrepeat':return k.replace('x',' × ')
    case 'lmatch':return `Letter ${k} (big and small)`;
    case 'ncompare':{const [m,c]=k.split(':');return `Which has ${m==='m'?'more':'fewer'}: ${c.split('v').join(' or ')}`}
    case 'ntrace':return `Tracing ${k}`;

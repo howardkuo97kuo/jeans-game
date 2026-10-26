@@ -1,4 +1,4 @@
-# Jean's Game (Block Pals)
+# Jean's Game (Princess Pals)
 
 A letters and numbers game for a young child, built as a single web page.
 
@@ -15,3 +15,5 @@ Pictures are original inline SVG drawings: about 80 of them, three or more for e
 The characters are original designs. Voice clips were generated with Microsoft's Edge text-to-speech.
 
 Also: shapes and colours, and colour patterns (the Shapes card on the home screen); a daily goal ring on the home screen and a weekly report in the grown-ups area; and install-to-home-screen with offline play (`manifest.json`, `sw.js`, `icon.svg`; needs the game to be served over https or localhost).
+
+Princess theme: an original princess (brown hair, gold tiara, red and gold gown) guides the game, with a sunset castle, roses and butterflies behind it and a princess sticker page. The letter and number blocks are still her friends. New: Time (read the clock, find the clock), Animals (names, sounds, where they live), and a Multiply menu (groups, adding up fast, rows and columns, times tables, sharing equally).
