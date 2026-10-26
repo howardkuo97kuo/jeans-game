@@ -20,3 +20,6 @@ Princess theme: an original princess (brown hair, gold tiara, red and gold gown)
 
 Voice tooling: lines the game could not say from `clips.json` are listed in `recorder/missing-lines.txt` (the grown-ups settings can also copy the live list). `python recorder/make_clips.py recorder/missing-lines.txt --voice <the voice used for the existing clips>` makes clips for the missing words so everything sounds like one voice (needs `pip install edge-tts` and internet).
 Princess extras: stars from every round unlock six gowns in the Gowns wardrobe; reaching the daily goal gives a daily gift sticker; the home screen has a "Princess picks for you" card that suggests the next activity.
+
+## Princess art
+`art/princess.png` is the original character artwork (background removed); `art/princess-head.png` is a head crop. The other files in `art/` are SVG redraws of the same character in different poses and gowns, generated from `princessSVG()` in `block-pals.html`.

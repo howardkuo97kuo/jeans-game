@@ -321,6 +321,9 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 @keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg) translateY(-6px)}}
 .bchar svg.princess{width:clamp(110px,26vmin,240px)}
 .princess.phead{overflow:hidden}
+.princess.pimg{object-fit:contain;-webkit-user-drag:none;user-select:none}
+.spage>*{min-width:0}
+.slot2 .em svg.princess,.stab .em svg.princess,.stkart .em svg.princess{width:100%;height:100%}
 .pblink{transform-box:fill-box;transform-origin:50% 50%;animation:blink 4.6s infinite}
 .pglint{animation:twinkle 2.4s ease-in-out infinite}
 @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:1}}
@@ -334,10 +337,10 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .princess-hero::before{left:-6%;top:12%}.princess-hero::after{right:-4%;top:30%;animation-delay:.9s;background:#FF8FB5}
 .hphead{animation:bob 3s ease-in-out infinite}
 .card.pick{grid-column:1/-1;flex-direction:row;gap:clamp(12px,3vmin,28px);min-height:clamp(110px,20vmin,200px)}
-.card.pick .art{min-height:0}.card.pick .art svg.princess{width:clamp(70px,16vmin,150px)}
+.card.pick .art{min-height:0}.card.pick .art svg.princess,.card.pick .art img.princess{width:clamp(70px,16vmin,150px);height:auto}
 .card.pick .pickt{text-align:left}.card.pick small{font:700 clamp(13px,2.8vmin,20px) var(--f-body);opacity:.9;display:block}
 .card.pick>svg{width:clamp(40px,8vmin,70px);height:auto;flex:none}
-.card .art svg.princess{width:clamp(50px,12vmin,110px)}
+.card .art svg.princess,.card .art img.princess{width:clamp(50px,12vmin,110px)}
 .wardrobe{flex:1;min-height:0;display:flex;flex-wrap:wrap;gap:clamp(12px,3vmin,30px);align-items:center;justify-content:center;overflow-y:auto}
 .swatches{display:grid;grid-template-columns:repeat(3,auto);gap:clamp(10px,2.4vmin,20px)}
 .swatch{width:clamp(70px,16vmin,130px);height:clamp(70px,16vmin,130px);border-radius:50%;background:#fff;box-shadow:0 6px 0 var(--sky2);display:grid;place-items:center;position:relative}
@@ -782,7 +785,7 @@ function screenSetup(){
 }
 function screenSplash(){
   render(`<div class="splash"><div class="logo"><b>Princess</b> <i>Pals</i></div>
-  <div class="row cast"><div class="side">${charSVG('A','A')}</div><div class="princess-hero big">${princessSVG('happy')}</div><div class="side">${charSVG('b','b')}</div></div>
+  <div class="row cast"><div class="side">${charSVG('A','A')}</div><div class="princess-hero big">${princessImg()}</div><div class="side">${charSVG('b','b')}</div></div>
   <button class="bigplay" data-act="start" aria-label="Play">${ICON.play}</button></div>`);
 }
 function homeStickers(){
@@ -800,7 +803,7 @@ function screenHome(){
   stopSay();
   render(`<div class="home"><div class="hellorow">${goalRing()}<div class="hello"><span class="hphead">${princessSVG('happy',{head:true})}</span>Hi ${esc(nm())}!</div>${ibtn('music',S.music?ICON.music:ICON.musicOff,S.music?'Music on':'Music off')}</div>
   <div class="cards">
-   <button class="card pick" style="--c:${pal(7)[0]};--cd:${pal(7)[1]}" data-act="pick" data-arg="${recommend()}"><div class="art">${princessSVG('happy',{head:true})}</div><div class="pickt"><small>Princess picks for you</small><div class="glyph sm">${esc(ACT_NAME[recommend()])}</div></div>${ICON.play}</button>
+   <button class="card pick" style="--c:${pal(7)[0]};--cd:${pal(7)[1]}" data-act="pick" data-arg="${recommend()}"><div class="art">${princessImg(true)}</div><div class="pickt"><small>Princess picks for you</small><div class="glyph sm">${esc(ACT_NAME[recommend()])}</div></div>${ICON.play}</button>
    <button class="card" style="--c:${pal(5)[0]};--cd:${pal(5)[1]}" data-act="menu" data-arg="letters"><div class="art">${charSVG('a','A')}${charSVG('b','b')}</div><div class="glyph sm">Letters</div></button>
    <button class="card" style="--c:${pal(3)[0]};--cd:${pal(3)[1]}" data-act="menu" data-arg="numbers"><div class="art">${stackSVG(3,{col:5,face:false})}${stackSVG(7,{col:1,face:false})}</div><div class="glyph sm">Numbers</div></button>
    <button class="card" style="--c:${pal(6)[0]};--cd:${pal(6)[1]}" data-act="menu" data-arg="multiply"><div class="art">${stackSVG(3,{col:2,face:false})}<span class="glyph sm">×</span>${stackSVG(4,{col:4,face:false})}</div><div class="glyph sm">Multiply</div></button>
@@ -882,71 +885,88 @@ const SH_SHAPES=[{n:'circle'},{n:'square'},{n:'triangle'},{n:'star'},{n:'heart'}
 const SH_PATH={circle:'<circle cx="50" cy="50" r="38"/>',square:'<rect x="14" y="14" width="72" height="72" rx="6"/>',triangle:'<path d="M50 10L92 86H8Z"/>',star:'<path d="M50 6L62 36L94 38L69 58L77 90L50 72L23 90L31 58L6 38L38 36Z"/>',heart:'<path d="M50 88C10 58 6 32 22 20Q38 10 50 30Q62 10 78 20Q94 32 90 58Q80 74 50 88Z"/>',rectangle:'<rect x="6" y="26" width="88" height="48" rx="6"/>',oval:'<ellipse cx="50" cy="50" rx="44" ry="28"/>',diamond:'<path d="M50 6L90 50L50 94L10 50Z"/>'};
 const shapeSVG=(s,col)=>{const c=(SH_COL.find(x=>x.n===col)||{c:'#B8C2DA'}).c;return `<svg viewBox="0 0 100 100" class="art" aria-hidden="true"><g fill="${c}" stroke="#1B2A55" stroke-width="3.5" stroke-linejoin="round">${SH_PATH[s]}</g></svg>`};
 
-/* ---------- the princess: original character in a soft 3D-animated-film style (brown hair, gold tiara with flowers, red and gold gown) ---------- */
+/* ---------- the princess: Princess Rosa, a flat cartoon girl with curly brown hair, a teal bow, a gold crown, a pink and yellow gown and a star wand ---------- */
 const DRESSES=[
- {n:'Sunset red',need:0,pr:['#F0503C','#C2272B'],py:['#FFD966','#F0A21E'],ps:['#FF7A3C','#F2503A','#FFB02E']},
- {n:'Sky blue',need:4,pr:['#5FA8FF','#2F63D6'],py:['#E8F4FF','#9CC8F5'],ps:['#7CC4FF','#4F86E8','#BFE4FF']},
- {n:'Rose pink',need:10,pr:['#FF8FC0','#E04C93'],py:['#FFE3F0','#FFB3D5'],ps:['#FFB0D2','#F0609F','#FFD0E6']},
- {n:'Forest green',need:18,pr:['#4CC670','#1F8A4A'],py:['#FFF0A6','#F0C23A'],ps:['#7FE08E','#2FA45A','#C9F2A0']},
- {n:'Royal purple',need:28,pr:['#A878F0','#6A3CC4'],py:['#FFE08A','#F0A21E'],ps:['#C9A2FF','#8450DC','#FFB8F0']},
- {n:'Mermaid teal',need:40,pr:['#2FD0C8','#128C96'],py:['#D8FFF4','#7AE0CE'],ps:['#7FF0E0','#1FB6B6','#FFB8E0']}];
+ {n:'Princess pink',need:0,a:'#F387A1',d:'#E96A89',b:'#FCD971',c:'#FCDEE0'},
+ {n:'Sky blue',need:4,a:'#74B4F7',d:'#4A8BE0',b:'#FFF0A0',c:'#E4F2FF'},
+ {n:'Lilac',need:10,a:'#B58CF0',d:'#8F62D8',b:'#FFD6F0',c:'#F0E6FF'},
+ {n:'Mint green',need:18,a:'#5CCF96',d:'#36AD78',b:'#FFF2A8',c:'#E2FBEE'},
+ {n:'Sunset orange',need:28,a:'#FF9A62',d:'#F0723A',b:'#FFE08A',c:'#FFF0E0'},
+ {n:'Mermaid teal',need:40,a:'#3CC9C0',d:'#20A39E',b:'#D9FFF3',c:'#E0FBF8'}];
+const P_SKIN='#FDCAAB',P_SKD='#F3B293',P_HAIR='#7D443D',P_HAIRD='#5F302B',P_TEAL='#40C1AF',P_TEALD='#259B8D',P_GOLD='#FBD872',P_GOLDD='#F0B446';
+const pStar=(x,y,r,f)=>`<path d="M${x} ${y-r}L${x+r*.24} ${y-r*.24}L${x+r} ${y}L${x+r*.24} ${y+r*.24}L${x} ${y+r}L${x-r*.24} ${y+r*.24}L${x-r} ${y}L${x-r*.24} ${y-r*.24}Z" fill="${f}"/>`;
+const pStar5=(x,y,r,f)=>{let d='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*.45:r;d+=(i?'L':'M')+(x+Math.cos(a)*q).toFixed(1)+' '+(y+Math.sin(a)*q).toFixed(1)}return `<path d="${d}Z" fill="${f}" stroke="${f}" stroke-width="6" stroke-linejoin="round"/>`};
+/* arm: skin stroke from shoulder to hand */
+const pArm=(d,hx,hy)=>`<path d="${d}" fill="none" stroke="${P_SKIN}" stroke-width="30" stroke-linecap="round"/><circle cx="${hx}" cy="${hy}" r="19" fill="${P_SKIN}"/>`;
+const pWand=(x1,y1,x2,y2,sr=36)=>`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${P_TEAL}" stroke-width="10" stroke-linecap="round"/>${pStar5(x2,y2-sr*.35,sr,P_GOLD)}`;
+/* the original artwork (cut out) is used where she wears her first gown; other gowns use the redrawn SVG */
+const princessImg=(head)=>(S.dress||0)===0?`<img class="princess pimg" src="art/princess${head?'-head':''}.png" alt="" draggable="false">`:princessSVG('happy',head?{head:true}:{});
 function princessSVG(mood,opts={}){
-  const D=DRESSES[S.dress||0]||DRESSES[0];
-  const happy=mood==='happy',oops=mood==='oops',up=!!opts.up,head=!!opts.head;
-  const defs=`<defs>
-   <radialGradient id="pk" cx=".5" cy=".42" r=".65"><stop offset="0" stop-color="#FFE6CF"/><stop offset=".7" stop-color="#F9C9A5"/><stop offset="1" stop-color="#E9A37E"/></radialGradient>
-   <linearGradient id="ph" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#9A5E38"/><stop offset=".5" stop-color="#6A3B20"/><stop offset="1" stop-color="#43220F"/></linearGradient>
-   <linearGradient id="pr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${D.pr[0]}"/><stop offset="1" stop-color="${D.pr[1]}"/></linearGradient>
-   <linearGradient id="py" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${D.py[0]}"/><stop offset="1" stop-color="${D.py[1]}"/></linearGradient>
-   <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0A6"/><stop offset=".5" stop-color="#F7BE2B"/><stop offset="1" stop-color="#C98A12"/></linearGradient>
-   <linearGradient id="ps" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${D.ps[0]}"/><stop offset=".5" stop-color="${D.ps[1]}"/><stop offset="1" stop-color="${D.ps[2]}"/></linearGradient>
-   <radialGradient id="pi" cx=".5" cy=".35" r=".7"><stop offset="0" stop-color="#9B6234"/><stop offset=".6" stop-color="#4D2A14"/><stop offset="1" stop-color="#2A150A"/></radialGradient>
-   <radialGradient id="pb" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FF7C92" stop-opacity=".75"/><stop offset="1" stop-color="#FF7C92" stop-opacity="0"/></radialGradient></defs>`;
-  const arm=(x0,y0,x1,y1,hx,hy)=>`<path d="M${x0} ${y0}Q${(x0+x1)/2+(x0<50?-6:6)} ${(y0+y1)/2} ${x1} ${y1}" fill="none" stroke="#E9A37E" stroke-width="8.500" stroke-linecap="round"/><path d="M${x0} ${y0}Q${(x0+x1)/2+(x0<50?-6:6)} ${(y0+y1)/2} ${x1} ${y1}" fill="none" stroke="url(#pk)" stroke-width="6.500" stroke-linecap="round"/><circle cx="${hx}" cy="${hy}" r="4.200" fill="#F9C9A5"/>`;
-  const arms=up?arm(28,76,12,56,11,52)+arm(72,76,88,56,89,52):arm(27,78,17,98,17,101)+arm(73,78,83,98,83,101);
-  const brow=oops?`<path d="M35 31Q40 29 46 32M65 31Q60 29 54 32" fill="none" stroke="#5A3018" stroke-width="1.600" stroke-linecap="round"/>`:`<path d="M35 32Q40 28.500 46 31M65 32Q60 28.500 54 31" fill="none" stroke="#5A3018" stroke-width="1.600" stroke-linecap="round"/>`;
-  const mouth=happy?`<path d="M41 52.500Q50 63 59 52.500Q50 55 41 52.500Z" fill="#A02A2E"/><path d="M42.500 53Q50 56 57.500 53Q50 54.800 42.500 53Z" fill="#fff"/><path d="M45 58.500Q50 57 55 58.500Q50 61.500 45 58.500Z" fill="#F0707E"/>`
-    :oops?`<ellipse cx="50" cy="55.500" rx="3.200" ry="2.600" fill="#A02A2E"/>`
-    :`<path d="M43 53Q50 59.500 57 53Q50 56 43 53Z" fill="#B83A40"/><path d="M43 53Q50 56 57 53" fill="none" stroke="#A02A2E" stroke-width="1" stroke-linecap="round"/>`;
-  const eye=(cx)=>`<g class="pblink"><ellipse cx="${cx}" cy="41" rx="6.200" ry="7" fill="#fff"/><ellipse cx="${cx}" cy="41.500" rx="5" ry="6" fill="url(#pi)"/><ellipse cx="${cx}" cy="42" rx="2.400" ry="3" fill="#1A0C05"/><circle cx="${cx-1.8}" cy="38.800" r="2" fill="#fff"/><circle cx="${cx+1.800}" cy="44" r=".9" fill="#fff" opacity=".85"/><path d="M${cx-6.800} 38.500Q${cx} 31.500 ${cx+6.800} 38.500" fill="none" stroke="#2A150A" stroke-width="2.200" stroke-linecap="round"/><path d="M${cx+(cx<50?-6.800:6.800)} 38.500l${cx<50?-1.800:1.800} -1.800" stroke="#2A150A" stroke-width="1.400" stroke-linecap="round"/></g>`;
-  const body=head?'':`<path d="M24 30Q6 58 14 92Q18 106 8 118Q26 114 34 98L38 66L62 66L66 98Q74 114 92 118Q82 106 86 92Q94 58 76 30Z" fill="url(#ph)"/>
-    <path d="M18 86Q22 100 14 112M82 86Q78 100 86 112M30 80Q28 96 22 106" fill="none" stroke="#B8794A" stroke-width="1.200" stroke-linecap="round" opacity=".6"/>
-    ${arms}
-    <path d="M33 90Q4 110 -1 128H101Q96 110 67 90Q50 99 33 90Z" fill="url(#pr)"/>
-    <path d="M50 99Q42 112 35 128H65Q58 112 50 99Z" fill="url(#py)"/>
-    <path d="M50 99Q42 112 35 128M50 99Q58 112 65 128" fill="none" stroke="url(#pg)" stroke-width="1.800" stroke-linecap="round"/>
-    <path d="M6 122Q50 132 94 122" fill="none" stroke="url(#pg)" stroke-width="2.600" stroke-linecap="round"/>
-    <path d="M14 112Q20 108 24 114Q20 120 14 112ZM76 114Q80 108 86 112Q82 120 76 114Z" fill="none" stroke="#FFD45C" stroke-width="1.100"/>
-    <g fill="#FFE27A"><circle cx="20" cy="104" r="1.200"/><circle cx="30" cy="116" r="1"/><circle cx="12" cy="122" r="1"/><circle cx="80" cy="104" r="1.200"/><circle cx="70" cy="116" r="1"/><circle cx="88" cy="122" r="1"/><circle cx="50" cy="118" r="1.100"/></g>
-    <path d="M33 66H67L69 88Q50 100 31 88Z" fill="url(#pr)"/>
-    <path d="M36 70Q50 82 64 70L66 86Q50 97 34 86Z" fill="url(#py)" opacity=".92"/>
-    <path d="M35 67Q50 79 65 67" fill="none" stroke="url(#pg)" stroke-width="2.800" stroke-linecap="round"/>
-    <path d="M50 78V92M42 76Q44 86 40 90M58 76Q56 86 60 90" fill="none" stroke="#E8A21E" stroke-width="1"/>
-    <path d="M50 77L53 81L50 85L47 81Z" fill="#E22E4A" stroke="url(#pg)" stroke-width="1.200"/>
-    <path d="M32 89Q50 100 68 89" fill="none" stroke="url(#pg)" stroke-width="2.600"/>
-    <ellipse cx="25" cy="72" rx="10.500" ry="9.500" fill="url(#ps)"/><ellipse cx="75" cy="72" rx="10.500" ry="9.500" fill="url(#ps)"/>
-    <path d="M18 68Q22 76 20 80M32 68Q28 76 30 80M68 68Q72 76 70 80M82 68Q78 76 80 80" fill="none" stroke="#C2272B" stroke-width="1.400" opacity=".7"/>
-    <path d="M15 79Q25 83 35 79M65 79Q75 83 85 79" fill="none" stroke="url(#pg)" stroke-width="2.600" stroke-linecap="round"/>
-    <path d="M44 56H56V68Q50 72 44 68Z" fill="#F2B28C"/>
-    <path d="M38 65Q50 77 62 65" fill="none" stroke="#FFC93C" stroke-width="1.600" stroke-linecap="round" stroke-dasharray="2.200 1.400"/><path d="M41 64Q50 74 59 64" fill="none" stroke="#E8333F" stroke-width="1.500" stroke-linecap="round" stroke-dasharray="1.500 1.500"/><circle cx="50" cy="73" r="2.200" fill="#E22E4A" stroke="url(#pg)" stroke-width=".9"/>`;
-  const face=`<path d="M25 34Q8 58 18 86Q26 78 32 62L36 40Z" fill="url(#ph)"/><path d="M75 34Q92 58 82 86Q74 78 68 62L64 40Z" fill="url(#ph)"/>
-    <path d="M29 36Q27 15 50 14Q73 15 71 36Q71 54 62 60Q50 68 38 60Q29 54 29 36Z" fill="url(#pk)"/>
-    <ellipse cx="35.500" cy="50" rx="6" ry="5" fill="url(#pb)"/><ellipse cx="64.500" cy="50" rx="6" ry="5" fill="url(#pb)"/>
-    <path d="M26 44Q22 18 50 9Q78 18 74 44Q71 26 61 21Q55 28 50 27Q45 28 39 21Q29 26 26 44Z" fill="url(#ph)"/>
-    <path d="M50 12Q45 20 38 22M50 12Q56 18 62 21" fill="none" stroke="#B8794A" stroke-width="1.100" opacity=".7" stroke-linecap="round"/>
-    <path d="M28 46Q25 56 30 64Q27 54 32 44Z" fill="url(#ph)"/><path d="M72 46Q75 56 70 64Q73 54 68 44Z" fill="url(#ph)"/>
-    ${brow}${eye(41)}${eye(59)}
-    <path d="M48.500 47.500Q50 49.500 52 47.800" fill="none" stroke="#D88F6A" stroke-width="1.200" stroke-linecap="round"/>
-    ${mouth}
-    <path d="M30 51Q27 55 29.500 58" fill="none" stroke="#C9704E" stroke-width=".01"/>
-    <circle cx="29" cy="52" r="1.700" fill="#fff4cc"/><path d="M29 53.500v3.500" stroke="#E8333F" stroke-width="2.200" stroke-linecap="round"/>
-    <circle cx="71" cy="52" r="1.700" fill="#fff4cc"/><path d="M71 53.500v3.500" stroke="#E8333F" stroke-width="2.200" stroke-linecap="round"/>
-    <path d="M32 21L36 12L41 17L45 8L50 3L55 8L59 17L64 12L68 21Q50 14 32 21Z" fill="url(#pg)"/><path d="M33 21Q50 15 67 21" fill="none" stroke="#C98A12" stroke-width="1"/>
-    <circle cx="50" cy="9.500" r="2.300" fill="#E22E4A"/><circle cx="45" cy="13.500" r="1.100" fill="#fff"/><circle cx="55" cy="13.500" r="1.100" fill="#fff"/><circle cx="38" cy="16" r="1" fill="#fff"/><circle cx="62" cy="16" r="1" fill="#fff"/>
-    <g class="pglint"><path d="M50 3V-1M47 5L45 2M53 5L55 2" stroke="#fff" stroke-width="1" stroke-linecap="round"/></g>
-    <g><circle cx="31" cy="23" r="3.200" fill="#FF8FB5"/><circle cx="27" cy="26" r="2.800" fill="#fff"/><circle cx="32" cy="27" r="2.600" fill="#FF8FB5"/><circle cx="31" cy="25" r="1" fill="#FFC93C"/><circle cx="27" cy="26" r=".9" fill="#FFC93C"/></g>
-    <g><circle cx="69" cy="23" r="3.200" fill="#FFB35C"/><circle cx="73" cy="26" r="2.800" fill="#fff"/><circle cx="68" cy="27" r="2.600" fill="#FF8FB5"/><circle cx="69" cy="25" r="1" fill="#FFC93C"/><circle cx="73" cy="26" r=".9" fill="#FFC93C"/></g>`;
-  return `<svg viewBox="${head?'10 -2 80 66':'0 -2 100 132'}" class="princess ${head?'phead':''}" aria-hidden="true">${defs}${body}${face}</svg>`;
+  const D=DRESSES[opts.dress!=null?opts.dress:(S.dress||0)]||DRESSES[0];
+  const pose=opts.pose||(opts.up?'cheer':'wand'),head=!!opts.head;
+  const oops=mood==='oops',neutral=mood==='n',think=pose==='think',wink=pose==='sparkle';
+  const eyeAt=(cx,cy,flip)=>{const s=flip?-1:1,look=think?-6:0;return `<g class="pblink"><ellipse cx="${cx}" cy="${cy}" rx="25" ry="28" fill="#FBFDFC"/><ellipse cx="${cx+look}" cy="${cy+3+(think?-4:0)}" rx="21" ry="24" fill="#753F35"/><ellipse cx="${cx+look}" cy="${cy+5+(think?-4:0)}" rx="12" ry="15" fill="#3B1D19"/><circle cx="${cx+look-9}" cy="${cy-6+(think?-4:0)}" r="8" fill="#fff"/><circle cx="${cx+look+8}" cy="${cy+12+(think?-4:0)}" r="3.500" fill="#fff" opacity=".9"/><path d="M${cx-25} ${cy-6}Q${cx} ${cy-34} ${cx+25} ${cy-8}" fill="none" stroke="#4A2520" stroke-width="5" stroke-linecap="round"/><path d="M${cx+s*25} ${cy-8}l${s*10} -9" stroke="#4A2520" stroke-width="4.500" stroke-linecap="round"/></g>`};
+  const eyeClosed=(cx,cy)=>`<path d="M${cx-22} ${cy+4}Q${cx} ${cy-22} ${cx+22} ${cy+4}" fill="none" stroke="#4A2520" stroke-width="7" stroke-linecap="round"/>`;
+  const browY=oops?[-2,-2]:think?[0,-14]:[0,0];
+  const brows=oops?`<path d="M162 ${224}Q185 ${216} 212 ${208}M285 ${200}Q308 ${208} 332 ${218}" fill="none" stroke="#A8604E" stroke-width="5.500" stroke-linecap="round"/>`
+    :`<path d="M165 ${222+browY[0]}Q188 ${208+browY[0]} 212 ${216+browY[0]}M288 ${212+browY[1]}Q312 ${198+browY[1]} 335 ${208+browY[1]}" fill="none" stroke="#A8604E" stroke-width="5.500" stroke-linecap="round"/>`;
+  const mouth=oops?`<path d="M232 308Q252 296 274 308" fill="none" stroke="#C2414E" stroke-width="6" stroke-linecap="round"/>`
+    :neutral||think?`<path d="M232 292Q254 308 276 290" fill="none" stroke="#C2414E" stroke-width="6" stroke-linecap="round"/>`
+    :`<path d="M222 282Q252 274 284 280Q280 322 252 322Q226 320 222 282Z" fill="#C2414E"/><path d="M230 296Q252 286 276 294Q272 320 252 320Q236 318 230 296Z" fill="#F56F7A"/><path d="M224 282Q252 274 283 280Q282 292 252 290Q226 292 224 282Z" fill="#fff"/>`;
+  const eyes=wink?eyeAt(186,250)+eyeClosed(310,242):eyeAt(186,250)+eyeAt(308,240,true);
+  /* hair: back bun, side curls, face, fringe */
+  const hairBack=`<g fill="${P_HAIR}"><circle cx="52" cy="150" r="46"/><circle cx="72" cy="98" r="46"/><circle cx="118" cy="58" r="42"/><circle cx="170" cy="62" r="34"/><circle cx="42" cy="204" r="32"/><circle cx="90" cy="224" r="36"/><circle cx="125" cy="150" r="64"/><circle cx="130" cy="110" r="52"/>
+    <ellipse cx="262" cy="175" rx="118" ry="92"/><circle cx="364" cy="228" r="30"/><circle cx="376" cy="268" r="26"/><circle cx="352" cy="312" r="26"/><circle cx="116" cy="320" r="28"/><circle cx="140" cy="290" r="26"/></g>
+    <g fill="none" stroke="${P_HAIRD}" stroke-width="6" stroke-linecap="round"><path d="M30 170Q42 150 60 160M60 110Q75 92 92 104M105 70Q122 56 138 70M40 215Q52 200 66 212M356 300Q366 286 376 300M104 322Q116 306 130 318"/></g>`;
+  const face=`<circle cx="114" cy="272" r="28" fill="${P_SKIN}"/><path d="M104 262Q112 258 118 268Q114 282 106 284" fill="none" stroke="${P_SKD}" stroke-width="5" stroke-linecap="round"/><circle cx="358" cy="256" r="23" fill="${P_SKIN}"/>
+    <rect x="224" y="320" width="58" height="50" fill="${P_SKD}"/>
+    <ellipse cx="252" cy="258" rx="108" ry="88" fill="${P_SKIN}"/>
+    <circle cx="180" cy="294" r="27" fill="#F8B19F" opacity=".85"/><circle cx="326" cy="284" r="27" fill="#F8B19F" opacity=".85"/>
+    ${brows}${eyes}
+    <path d="M246 268Q254 276 264 269" fill="none" stroke="#E79C80" stroke-width="5" stroke-linecap="round"/>${mouth}
+    <path d="M152 240Q150 160 226 140Q300 128 350 190Q362 215 357 240Q340 196 305 190Q290 226 252 196Q220 190 198 214Q170 224 152 240Z" fill="${P_HAIR}"/>
+    <path d="M232 150Q250 165 246 190M300 146Q320 160 318 182" fill="none" stroke="${P_HAIRD}" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+    <path d="M200 108H292L284 138H208Z" fill="${P_GOLDD}"/>
+    <path d="M198 108L190 40L222 72L243 18L268 72L298 36L292 108Z" fill="${P_GOLD}"/><path d="M222 72L243 18L268 72" fill="none" stroke="${P_GOLDD}" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="190" cy="32" r="11" fill="${P_GOLD}"/><circle cx="243" cy="14" r="11" fill="${P_GOLD}"/><circle cx="298" cy="30" r="11" fill="${P_GOLD}"/>
+    <circle cx="244" cy="82" r="13" fill="#F1809C"/><circle cx="240" cy="78" r="4" fill="#fff" opacity=".7"/>
+    <path d="M138 100Q165 38 198 78Q178 114 138 100Z" fill="${P_TEAL}"/><path d="M138 100Q104 78 76 116Q106 134 138 100Z" fill="${P_TEAL}"/><path d="M112 122Q96 160 96 204Q112 166 126 128Z" fill="${P_TEAL}"/><circle cx="138" cy="100" r="17" fill="${P_TEALD}"/>`;
+  if(head)return `<svg viewBox="0 0 400 372" class="princess phead" aria-hidden="true">${hairBack}${face}</svg>`;
+  /* body: legs, skirt, bodice, sleeves, arms */
+  const legs=`<path d="M158 690Q150 715 140 740" stroke="${P_SKIN}" stroke-width="28" stroke-linecap="round" fill="none"/><path d="M262 695Q266 722 272 748" stroke="${P_SKIN}" stroke-width="28" stroke-linecap="round" fill="none"/>
+    <ellipse cx="136" cy="752" rx="30" ry="15" transform="rotate(58 136 752)" fill="${D.a}"/><ellipse cx="292" cy="756" rx="34" ry="15" transform="rotate(10 292 756)" fill="${D.a}"/>`;
+  const skirt=`<path d="M168 445L338 445Q430 520 468 655Q472 690 440 696Q386 702 334 686Q250 708 170 686Q92 698 38 696Q2 690 6 655Q40 520 168 445Z" fill="${D.a}"/>
+    <path d="M214 520Q250 498 286 520Q332 620 352 686Q250 716 148 686Q172 600 214 520Z" fill="${D.c}"/>
+    <path d="M160 684Q175 700 200 690Q225 706 250 692Q275 706 300 690Q325 700 342 684" fill="none" stroke="${D.a}" stroke-width="12" stroke-linecap="round"/>
+    <path d="M250 500Q240 455 175 455Q95 485 40 540Q50 575 100 568Q200 548 250 500Z" fill="${D.b}"/>
+    <path d="M250 500Q262 458 320 455Q390 480 440 560Q435 590 390 585Q290 560 250 500Z" fill="${D.b}"/>
+    ${pStar(90,532,20,D.a)}${pStar(170,502,18,D.a)}${pStar(318,497,18,D.a)}${pStar(392,548,20,D.a)}${pStar(300,574,10,P_GOLD)}${pStar(153,592,10,P_GOLD)}${pStar(46,618,14,P_GOLD)}${pStar(355,616,10,P_GOLD)}${pStar(432,646,15,P_GOLD)}`;
+  const bodice=`<path d="M205 350H285L292 382Q268 402 247 385Q226 402 203 382Z" fill="${P_SKIN}"/>
+    <path d="M182 372Q200 370 205 380Q226 402 247 386Q268 402 290 380Q300 370 318 374L336 445L250 480L168 445Z" fill="${D.a}"/>
+    <path d="M168 440L250 478L336 440L340 458L250 498L164 458Z" fill="${D.d}"/>
+    <path d="M243 424Q222 408 230 396Q238 390 243 399Q248 390 256 396Q264 408 243 424Z" fill="${P_GOLD}"/>`;
+  const sleeves=`<ellipse cx="160" cy="384" rx="46" ry="40" fill="${D.a}"/><path d="M118 408L142 428L126 436L112 418Z" fill="${D.d}"/>
+    <ellipse cx="322" cy="380" rx="46" ry="40" fill="${D.a}"/><path d="M350 404L370 424L354 432L338 414Z" fill="${D.d}"/>`;
+  const sp=(x,y,r)=>pStar(x,y,r,'#fff');
+  let armsBack='',armsFront='',extra='';
+  switch(pose){
+   case 'cheer':
+    armsBack=pArm('M135 400Q88 360 64 300',62,292)+pArm('M345 395Q392 350 416 296',418,288)+pWand(418,296,438,196,40);
+    extra=sp(70,230,12)+sp(380,150,12)+sp(470,230,9);break;
+   case 'wave':
+    armsBack=pArm('M135 400Q82 370 56 296',54,286)+pArm('M345 400Q380 430 400 470',404,478)+pWand(404,478,448,580,34);
+    extra=`<path d="M20 250Q8 280 14 308M92 246Q104 274 98 304" fill="none" stroke="${D.a}" stroke-width="7" stroke-linecap="round"/>`;break;
+   case 'think':
+    armsBack=pArm('M130 410Q86 430 44 442',38,446)+pArm('M345 405Q392 392 360 346Q318 344 292 336',286,332);
+    extra=`<circle cx="404" cy="190" r="9" fill="#fff"/><circle cx="428" cy="150" r="14" fill="#fff"/><circle cx="440" cy="92" r="30" fill="#fff"/>${pStar(440,92,16,P_GOLD)}`;break;
+   case 'sparkle':
+    armsBack=pArm('M130 410Q86 430 44 442',38,446)+pArm('M345 405Q400 400 440 392',446,390)+pWand(446,392,466,296,36);
+    extra=sp(386,296,13)+sp(480,230,10)+sp(420,236,9)+pStar(36,330,12,P_GOLD);break;
+   default:
+    armsBack=pArm('M130 410Q86 430 44 442',38,446)+pArm('M345 405Q392 410 418 388',424,384)+pWand(414,440,444,306,38);
+    extra=`<g class="pglint">${pStar(60,300,10,P_GOLD)}</g>`;
+  }
+  return `<svg viewBox="-10 -4 520 800" class="princess" aria-hidden="true">${legs}${skirt}${armsBack}${bodice}${sleeves}${hairBack}${face}${extra}</svg>`;
 }
 /* ---------- time, animals ---------- */
 const timeStr=(h,m)=>`${h}:${String(m).padStart(2,'0')}`;
@@ -1565,7 +1585,7 @@ function celebrate({stars,next,leveled,f,id,aw,bonus,combo,speedy,newDress,gift}
   const who=next?nameOf(next):null;
   render(`<div class="celebrate"><div class="confetti">${conf}</div>
    <div class="stars">${[0,1,2].map(i=>ICON.star(i<stars)).join('')}</div>
-   <div class="row cast"><div class="princess-hero">${princessSVG('happy',{up:true})}</div>${next?`<div class="hero" data-act="hello" data-arg="${next}">${blockFor(next)}</div>`:''}${aw?`<div class="hero2">${stickerHTML(aw.id,{shiny:aw.shiny,big:true})}</div>`:''}${bonus?`<div class="hero2">${stickerHTML(bonus,{shiny:true,big:true})}</div>`:''}</div>
+   <div class="row cast"><div class="princess-hero">${princessSVG('happy',{pose:'cheer'})}</div>${next?`<div class="hero" data-act="hello" data-arg="${next}">${blockFor(next)}</div>`:''}${aw?`<div class="hero2">${stickerHTML(aw.id,{shiny:aw.shiny,big:true})}</div>`:''}${bonus?`<div class="hero2">${stickerHTML(bonus,{shiny:true,big:true})}</div>`:''}</div>
    <div class="row">${next?'<div class="badge">New block!</div>':'<div class="badge">You have every block!</div>'}${aw?`<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">${aw.shiny?'Shiny sticker!':'New sticker!'}</div>`:''}${leveled?'<div class="badge" style="background:var(--green);color:#fff;box-shadow:0 4px 0 #2E8F34">Level up!</div>':''}${combo>=4?`<div class="badge" style="background:var(--orange);color:#fff;box-shadow:0 4px 0 #C46E10">${combo} in a row!</div>`:''}${speedy>=4?'<div class="badge" style="background:var(--blue);color:#fff;box-shadow:0 4px 0 #21509E">Speedy!</div>':''}${bonus?`<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">${gift?'Daily gift!':'Bonus sticker!'}</div>`:''}${newDress>0?'<div class="badge" style="background:var(--purple);color:#fff;box-shadow:0 4px 0 #6139B0">New gown!</div>':''}</div>
    ${aw&&aw.medals.length?`<div class="row">${aw.medals.map(m=>stickerHTML(m,{shiny:true})).join('')}<div class="badge" style="background:var(--purple);color:#fff;box-shadow:0 4px 0 #6139B0">Special sticker!</div></div>`:''}
    <div class="actions">${ibtn('again',ICON.playDark,'Play again',id)}${newDress>0?ibtn('wardrobe',princessSVG('happy',{head:true}),'Wardrobe'):''}${ibtn('menu-back',ICON.back,'Back')}${ibtn('home',ICON.home,'Home')}${ibtn('blocks',ICON.blocks,'My blocks')}${ibtn('stickers',ICON.book,'Sticker book')}</div></div>`);
@@ -1591,11 +1611,15 @@ const SP=[
  {id:'Zoo',icon:'lion',art:true,list:['elephant','lion','monkey','zebra','tiger','bear','owl','horse']},
  {id:'Fruit',icon:'strawberry',art:true,list:['apple','banana','grapes','orange','pear','watermelon','strawberry','cherry']},
  {id:'Vehicles',icon:'bus',art:true,list:['car','bus','train','airplane','yacht','van','bicycle','firetruck']},
- {id:'Princess',icon:'crown',art:true,list:['crown','castle','rose','butterfly','wand','gem','carriage','unicorn']}
+ {id:'Princess',icon:'crown',art:true,list:['crown','castle','rose','butterfly','wand','gem','carriage','unicorn']},
+ {id:'Rosa',icon:'wand',pose:true,list:['wand','cheer','wave','think','sparkle','blue','lilac','teal']}
 ];
-const SORDER=[12,0,1,2,3,4,5,6,8,9,10,11,7];
-const stkFace=(p,j)=>SP[p].art?svgArt(SP[p].list[j]):SP[p].list[j];
-const stkIcon=p=>SP[p].art?svgArt(SP[p].icon):SP[p].icon;
+const SORDER=[13,12,0,1,2,3,4,5,6,8,9,10,11,7];
+/* Princess Rosa stickers: one per pose, three in other gowns */
+const ROSA_STK={wand:{dress:0},cheer:{pose:'cheer',dress:0},wave:{pose:'wave',dress:0},think:{pose:'think',dress:0},sparkle:{pose:'sparkle',dress:0},blue:{head:true,dress:1},lilac:{head:true,dress:2},teal:{head:true,dress:5}};
+const rosaStk=k=>princessSVG('happy',ROSA_STK[k]||{});
+const stkFace=(p,j)=>SP[p].art?svgArt(SP[p].list[j]):SP[p].pose?rosaStk(SP[p].list[j]):SP[p].list[j];
+const stkIcon=p=>SP[p].art?svgArt(SP[p].icon):SP[p].pose?princessSVG('happy',{head:true}):SP[p].icon;
 function bonusSticker(){
   const all=[];SP.forEach((pg,p)=>{if(!pg.medal)for(let i=0;i<8;i++)all.push(p+':'+i)});
   const un=all.filter(id=>!S.stickers[id]),id=pick(un.length?un:all);
@@ -1603,7 +1627,7 @@ function bonusSticker(){
 }
 const MEDALS=['First round finished','A perfect round','Moved up a level','Tried ten activities','Five perfect rounds','Played three days in a row','100 questions answered','Ten blocks collected'];
 const STK_TOTAL=SP.length*8;
-let spage=12;
+let spage=13;
 const stickerCount=()=>Object.keys(S.stickers||{}).length;
 function awardStickers(stars,f,leveled){
   S.stickers=S.stickers||{};S.newStickers=S.newStickers||[];
@@ -1641,9 +1665,9 @@ function screenStickers(keep){
 
 function screenWardrobe(){
   stopSay();const st=S.stars||0;
-  const sw=DRESSES.map((d,i)=>{const ok=st>=d.need;return `<button class="swatch ${i===(S.dress||0)?'on':''} ${ok?'':'lock'}" data-act="${ok?'dress':'locked'}" data-arg="${i}" aria-label="${d.n}${ok?'':', locked'}" style="--a:${d.pr[0]};--b:${d.pr[1]};--c:${d.py[0]}"><i></i>${ok?'':`<small>${d.need} stars</small>`}</button>`}).join('');
+  const sw=DRESSES.map((d,i)=>{const ok=st>=d.need;return `<button class="swatch ${i===(S.dress||0)?'on':''} ${ok?'':'lock'}" data-act="${ok?'dress':'locked'}" data-arg="${i}" aria-label="${d.n}${ok?'':', locked'}" style="--a:${d.a};--b:${d.d};--c:${d.b}"><i></i>${ok?'':`<small>${d.need} stars</small>`}</button>`}).join('');
   render(`<div class="topbar">${ibtn('home',ICON.home,'Home')}<div class="pips"><div class="bubble">${st} stars collected</div></div></div>
-   <div class="wardrobe"><div class="princess-hero big">${princessSVG('happy',{up:true})}</div><div class="swatches">${sw}</div></div>`);
+   <div class="wardrobe"><div class="princess-hero big">${princessSVG('happy',{pose:'wave'})}</div><div class="swatches">${sw}</div></div>`);
 }
 function screenBlocks(){
   stopSay();
