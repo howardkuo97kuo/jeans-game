@@ -8,7 +8,7 @@
 <link rel="icon" href="icon.svg">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&family=Noto+Color+Emoji&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
 <style>
 /* Layout: one full-height screen at a time; big colored "block" buttons with a thick bottom edge, voice does the instructing. Single bright look by choice. */
 :root{
@@ -16,7 +16,7 @@
   --red:#F2564B; --orange:#FF9A2E; --yellow:#FFC928; --green:#4CC152; --teal:#1FB6B6; --blue:#3D8BFF; --purple:#8E5BE8; --pink:#FF6FB1;
   --f-display:'Fredoka','Baloo 2','Trebuchet MS',system-ui,sans-serif;
   --f-body:'Nunito','Segoe UI',system-ui,sans-serif;
-  --f-emoji:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;
+  --f-emoji:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
   --u:clamp(18px,5.4vmin,56px);
   color-scheme:light;
 }
@@ -34,8 +34,8 @@ h1,h2{font-family:var(--f-display);margin:0;text-wrap:balance}
 .round{width:clamp(54px,9vmin,92px);height:clamp(54px,9vmin,92px);border-radius:50%;background:var(--card);box-shadow:0 5px 0 var(--sky2);display:grid;place-items:center;flex:none}
 .round:active{transform:translateY(3px);box-shadow:0 2px 0 var(--sky2)}
 .round svg{width:55%;height:55%}
-.pips{flex:1;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
-.pip{width:clamp(14px,2.6vmin,22px);height:clamp(14px,2.6vmin,22px);border-radius:6px;background:#fff;border:3px solid var(--sky2)}
+.pips{flex:1;min-width:0;display:flex;justify-content:center;gap:clamp(4px,1.2vmin,8px);flex-wrap:nowrap}
+.pip{flex:none;width:clamp(12px,2.6vmin,22px);height:clamp(12px,2.6vmin,22px);border-radius:6px;background:#fff;border:3px solid var(--sky2)}
 .pip.ok{background:var(--green);border-color:#2E8F34}
 .pip.assist{background:var(--yellow);border-color:#C79A0B}
 .pip.now{border-color:var(--ink);transform:scale(1.2)}
@@ -144,14 +144,14 @@ svg.blk{width:clamp(90px,24vmin,230px);height:auto}
 .slot2.fresh{animation:pop .8s}
 .slot2 .cnt{position:absolute;right:6px;bottom:4px;font:800 13px var(--f-display);color:var(--muted);font-style:normal}
 .slot2 .new{position:absolute;top:-8px;right:-6px;background:var(--red);color:#fff;font:800 12px var(--f-display);border-radius:10px;padding:2px 7px;font-style:normal;z-index:2}
-.stabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
-.stab{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 8px;border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--sky2);min-width:clamp(44px,8vmin,64px)}
+.stabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;max-width:860px;width:100%;margin:0 auto}
+.stab{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--sky2);min-width:0;justify-content:center}
 .stab .em{font-size:clamp(22px,5vmin,36px)}
 .stab small{font:700 11px var(--f-body);color:var(--muted)}
 .stab.on{background:var(--yellow);box-shadow:0 4px 0 #C79A0B}
 .stab.on small{color:var(--ink)}
 .sbook{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:8px;padding:6px 2px 14px}
-.spage{width:min(100%,860px);display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2.6vmin,26px);padding:clamp(16px,3.4vmin,32px);border-radius:28px;background:color-mix(in srgb,var(--pg) 16%,#fff);box-shadow:0 8px 0 var(--sky2)}
+.spage{width:min(100%,860px,150vmin);display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2.6vmin,26px);padding:clamp(16px,3.4vmin,32px);border-radius:28px;background:color-mix(in srgb,var(--pg) 16%,#fff);box-shadow:0 8px 0 var(--sky2)}
 .mhint{color:var(--muted);text-align:center;max-width:620px}
 .stkart{gap:0}
 .stkart .em{font-size:clamp(34px,9vmin,80px)}
@@ -160,7 +160,7 @@ svg.blk{width:clamp(90px,24vmin,230px);height:auto}
 .home .card .glyph.sm{font-size:clamp(26px,5.6vmin,64px);white-space:nowrap}
 .hellorow{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .hello{font-size:clamp(30px,9vmin,76px);font-weight:700;text-align:center}
-.cards{flex:1;min-height:0;display:grid;gap:clamp(12px,2.4vmin,20px);grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));align-content:safe center;overflow-y:auto;padding-bottom:12px}
+.cards{flex:1;min-height:0;display:grid;gap:clamp(12px,2.4vmin,20px);grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));align-content:safe center;overflow-y:auto;padding-bottom:76px}
 .card{position:relative;border-radius:30px;background:var(--c);box-shadow:0 10px 0 var(--cd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 10px;min-height:clamp(140px,28vmin,340px);color:#fff;font-family:var(--f-display);font-weight:700;transition:transform .12s}
 .card:active{transform:translateY(6px);box-shadow:0 4px 0 var(--cd)}
 .card .art{display:flex;align-items:flex-end;justify-content:center;gap:8px;min-height:clamp(60px,15vmin,160px)}
@@ -204,7 +204,7 @@ svg.blk{width:clamp(90px,24vmin,230px);height:auto}
 .actions .round{width:clamp(70px,14vmin,100px);height:clamp(70px,14vmin,100px)}
 .badge{display:inline-block;background:var(--yellow);color:var(--ink);border-radius:20px;padding:4px 16px;font-family:var(--f-display);font-weight:700;font-size:clamp(20px,4.5vmin,30px);box-shadow:0 4px 0 #C79A0B}
 
-.collection{flex:1;min-height:0;overflow-y:auto;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(30%,120px),1fr));align-content:start;padding:4px 2px 14px}
+.collection{flex:1;min-height:0;overflow-y:auto;display:grid;grid-auto-rows:max-content;gap:12px;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));align-content:start;padding:4px 2px 14px}
 .cell{aspect-ratio:1;border-radius:22px;background:#fff;box-shadow:0 5px 0 var(--sky2);display:flex;align-items:flex-end;justify-content:center;padding:8px;overflow:hidden}
 .cell.lock{background:#ffffff77;box-shadow:none;align-items:center;font-family:var(--f-display);font-size:44px;color:var(--sky2)}
 .cell svg.blk{width:70%}
@@ -245,6 +245,8 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .obj{display:grid;place-items:center}
 .picstrip{display:flex;gap:clamp(8px,2vmin,18px);justify-content:center;animation:pop .5s}
 .picstrip figure{margin:0;width:clamp(54px,12vmin,100px);text-align:center;background:#fff;border-radius:16px;padding:6px;box-shadow:0 4px 0 var(--sky2)}
+.picstrip figure svg.art{width:100%;height:auto;aspect-ratio:1}
+.picstrip{align-items:flex-start;flex:none}
 .picstrip figcaption{font:700 clamp(12px,2.6vmin,18px) var(--f-display);color:var(--ink)}
 .slot2 .em svg.art,.stab .em svg.art,.stkart .em svg.art{width:100%;height:100%}
 .slot2 .em:has(svg){display:block;width:72%;height:72%}
@@ -329,9 +331,9 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:1}}
 .mg{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-50%);clip-path:polygon(50% 0,62% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 36%);animation:mgfly .75s ease-out forwards}
 @keyframes mgfly{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2) rotate(200deg);opacity:0}}
-.pbubble{position:absolute;right:calc(100% + 6px);top:50%;transform:translateY(-50%);white-space:nowrap;background:#fff;color:var(--ink);font:700 clamp(14px,3vmin,22px) var(--f-display);padding:6px 14px;border-radius:18px;box-shadow:0 4px 0 var(--sky2);animation:bubbleIn 2.4s ease both;pointer-events:none}
-.pbubble::after{content:"";position:absolute;left:100%;top:50%;margin-top:-7px;border:7px solid transparent;border-left-color:#fff}
-@keyframes bubbleIn{0%{opacity:0;transform:translateY(-50%) scale(.6)}10%{opacity:1;transform:translateY(-50%) scale(1.05)}18%{transform:translateY(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}
+.pbubble{position:absolute;right:0;top:calc(100% + 12px);transform-origin:90% 0;white-space:nowrap;background:#fff;color:var(--ink);font:700 clamp(14px,3vmin,22px) var(--f-display);padding:6px 14px;border-radius:18px;box-shadow:0 4px 0 var(--sky2);animation:bubbleIn 2.4s ease both;pointer-events:none}
+.pbubble::after{content:"";position:absolute;right:22px;bottom:100%;border:7px solid transparent;border-bottom-color:#fff}
+@keyframes bubbleIn{0%{opacity:0;transform:scale(.6)}10%{opacity:1;transform:scale(1.05)}18%{transform:scale(1)}85%{opacity:1}100%{opacity:0}}
 .princess-hero{position:relative}
 .princess-hero::before,.princess-hero::after{content:"";position:absolute;width:16%;aspect-ratio:1;background:#FFD45C;clip-path:polygon(50% 0,62% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 36%);animation:twinkle 1.8s ease-in-out infinite}
 .princess-hero::before{left:-6%;top:12%}.princess-hero::after{right:-4%;top:30%;animation-delay:.9s;background:#FF8FB5}
