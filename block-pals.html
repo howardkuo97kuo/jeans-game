@@ -222,10 +222,6 @@ svg.blk{width:clamp(90px,24vmin,230px);height:auto}
 .parent .btn.danger{background:var(--red)}
 .parent .btn.ghost{background:var(--sky);color:var(--ink)}
 .parent small{color:var(--muted)}
-.snd{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
-.snd button{border-radius:12px;background:var(--sky);padding:10px 0;font:700 20px var(--f-display);position:relative}
-.snd button.has{background:var(--green);color:#fff}
-.snd button.rec{background:var(--red);color:#fff;animation:hint .5s infinite alternate}
 table{border-collapse:collapse;width:100%;font-size:15px}
 .tw{overflow-x:auto}
 td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--sky)}
@@ -355,7 +351,6 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 </style>
 
 <div id="app"></div>
-<input type="file" id="sndfile" accept="audio/*" hidden>
 
 <script>
 /* ---------- helpers ---------- */
@@ -485,7 +480,7 @@ const OBJ=['apple','fish','star','car','flower','ladybug','ball','cake'];
 
 /* ---------- storage ---------- */
 const KEY='blockpals.v1';
-const defaults=()=>({name:'',stickers:{},newStickers:[],perfects:0,breakMin:15,breakLen:2,days:{},hints:true,music:true,musicVol:0.5,unlockAll:false,voice:'',rate:0.85,unlocked:[],act:{},rec:{},timer:true,bestCombo:0,dress:0,stars:0,giftDay:'',missing:{}});
+const defaults=()=>({name:'',stickers:{},newStickers:[],perfects:0,breakMin:15,breakLen:2,days:{},hints:true,music:true,musicVol:0.5,unlockAll:false,unlocked:[],act:{},timer:true,bestCombo:0,dress:0,stars:0,giftDay:'',missing:{}});
 function load(){try{return Object.assign(defaults(),JSON.parse(localStorage.getItem(KEY))||{})}catch(e){return defaults()}}
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
 let S=load(); let storageOk=true;
@@ -497,17 +492,7 @@ let ac;
 function tone(f,d,t='sine',when=0,vol=.15){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+when;o.type=t;o.frequency.value=f;g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(vol,n+.02);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g).connect(ac.destination);o.start(n);o.stop(n+d+.05)}catch(e){}}
 const sfx={ok(){tone(660,.15,'triangle');tone(880,.25,'triangle',.12);tone(1320,.14,'sine',.26,.05);tone(1760,.2,'sine',.34,.04)},no(){tone(260,.22,'sine',0,.09)},pop(){tone(520,.09,'square',0,.05)},win(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,'triangle',i*.13))}};
 
-let voice=null;
-function pickVoice(){
-  if(!('speechSynthesis' in window))return null;
-  const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
-  if(S.voice){const f=vs.find(v=>v.voiceURI===S.voice);if(f)return voice=f}
-  for(const p of ['Samantha','Ava','Allison','Serena','Aria','Jenny','Ana','Google UK English Female','Google US English','Zira','Karen','Moira','Tessa','Fiona']){const f=vs.find(v=>v.name.includes(p));if(f)return voice=f}
-  return voice=vs.find(v=>/en-US/i.test(v.lang))||vs[0]||null;
-}
-if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=()=>{voice=null;pickVoice()};
-
-/* Natural voice: pre-made clips (clips.json) are joined together; any text they can't cover falls back to the browser voice. */
+/* Natural voice: pre-made clips (clips.json) are joined together; any word they can't cover is skipped. */
 let CLIPS=null;const BUF={};let curSrc=null;
 fetch('clips.json').then(r=>r.ok?r.json():null).then(j=>{CLIPS=j}).catch(()=>{});
 function getCtx(){ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();return ac}
@@ -533,6 +518,7 @@ async function playClip(key,maxDur){
 }
 function clipPlan(text){
   if(!CLIPS)return null;
+  let missed=false;
   const t=text.toLowerCase().replace(/\d+/g,m=>+m<=100?numWords(+m):m).replace(/[’]/g,"'"),words=[];
   t.replace(/([a-z0-9'\-]+)([,.!?]*)/g,(m,w,p)=>{words.push({w,p:!!p})});
   const plan=[];let i=0;
@@ -542,35 +528,25 @@ function clipPlan(text){
       const k=words.slice(i,j).map(x=>x.w).join(' ');
       if(CLIPS[k]){plan.push(k,words[j-1].p?.25:.03);i=j;hit=true;break}
     }
-    if(!hit)return null;
+    if(!hit){missed=true;i++}
   }
-  return plan;
+  plan.missed=missed;return plan;
 }
 async function speak(text,my){
   const plan=clipPlan(text);
-  if(plan){for(const p of plan){if(my!==undefined&&my!==sayTok)return;if(typeof p==='number')await wait(p*1000);else await playClip(p)}return}
-  if(text&&text.length>2){S.missing=S.missing||{};const k=text.toLowerCase().replace(/\s+/g,' ').trim();if(!S.missing[k]&&Object.keys(S.missing).length<400){S.missing[k]=1;clearTimeout(speak._t);speak._t=setTimeout(save,1500)}}
-  return ttsSpeak(text);
+  if(!plan)return;
+  if(plan.missed&&text&&text.length>2){S.missing=S.missing||{};const k=text.toLowerCase().replace(/\s+/g,' ').trim();if(!S.missing[k]&&Object.keys(S.missing).length<400){S.missing[k]=1;clearTimeout(speak._t);speak._t=setTimeout(save,1500)}}
+  for(const p of plan){if(my!==undefined&&my!==sayTok)return;if(typeof p==='number')await wait(p*1000);else await playClip(p)}
 }
-function ttsSpeak(text){return new Promise(res=>{
-  if(!('speechSynthesis' in window)){res();return}
-  const u=new SpeechSynthesisUtterance(text);
-  if(voice||pickVoice()){u.voice=voice;u.lang=voice.lang}else u.lang='en-US';
-  u.rate=S.rate*.95;u.pitch=1.22;u.volume=.95;
-  let done=false,t;const fin=()=>{if(!done){done=true;clearTimeout(t);res()}};
-  u.onend=fin;u.onerror=fin;t=setTimeout(fin,2000+text.length*130);
-  try{speechSynthesis.speak(u)}catch(e){fin()}
-})}
-let sayTok=0,curAudio=null;
-function stopSay(){sayTok++;duck(false);try{speechSynthesis.cancel()}catch(e){}if(curAudio){try{curAudio.pause()}catch(e){}curAudio=null}
+let sayTok=0;
+function stopSay(){sayTok++;duck(false);
   if(curSrc){const c=curSrc;curSrc=null;c.src.onended=null;try{c.src.stop()}catch(e){}c.res(false)}}
-function playRec(url){return new Promise(res=>{const a=new Audio(url);curAudio=a;a.onended=a.onerror=()=>res();a.play().catch(()=>res())})}
 async function sayParts(parts){
   stopSay();const my=sayTok;duck(true);await wait(40);
   for(const p of parts){
     if(my!==sayTok)return;
     if(typeof p==='number'){await wait(p);continue}
-    if(p.sound){const l=p.sound.toLowerCase();if(S.rec[l])await playRec(S.rec[l]);else if(p.word&&await playClip('ph_'+l))continue;else if(!(await playClip('snd_'+l,STOP_CUT[l])))await ttsSpeak(PHON[l]);continue}
+    if(p.sound){const l=p.sound.toLowerCase();if(p.word&&await playClip('ph_'+l))continue;await playClip('snd_'+l,STOP_CUT[l]);continue}
     await speak(p,my);
   }
   if(my===sayTok)duck(false);
@@ -1856,7 +1832,7 @@ function endBreak(){
 }
 
 /* ---------- grown-ups area: Progress tab and Settings tab ---------- */
-let pTab='progress',recState=null,recStop=null;
+let pTab='progress';
 const dayKey=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 function recStat(id,key,ok){
   const a=A(id);a.items=a.items||{};
@@ -1982,7 +1958,6 @@ function summaryText(){
   return lines.join('\n');
 }
 function settingsHTML(){
-  const voices=('speechSynthesis' in window?speechSynthesis.getVoices():[]).filter(v=>/^en/i.test(v.lang));
   return `<section><h3>Child</h3>
    <label for="pName">Name <input type="text" id="pName" value="${esc(S.name)}" maxlength="20" autocomplete="off"></label>
    <label for="pHints"><input type="checkbox" id="pHints" ${S.hints?'checked':''}> Give gentle hints when she pauses (repeats the question, then hides wrong answers, then shows the right one)</label>
@@ -1995,15 +1970,9 @@ function settingsHTML(){
   <section><h3>Music</h3>
    <label for="pMusic"><input type="checkbox" id="pMusic" ${S.music?'checked':''}> Play background music</label>
    <label for="pMVol">Volume <input type="range" id="pMVol" min="0.1" max="1" step="0.05" value="${S.musicVol}"></label></section>
-  <section><h3>Voice</h3>
-   <small>${CLIPS?'The natural voice is loaded. The settings below only apply if it is not.':'The natural voice did not load, so the game is using this device\'s own voice.'}</small>
-   <label for="pVoice">Voice <select id="pVoice"><option value="">Automatic</option>${voices.map(v=>`<option value="${esc(v.voiceURI)}" ${S.voice===v.voiceURI?'selected':''}>${esc(v.name)}</option>`).join('')}</select></label>
-   <label for="pRate">Speed <input type="range" id="pRate" min="0.6" max="1.1" step="0.05" value="${S.rate}"></label>
+  <section><h3>Voice</h3><small>${CLIPS?'The game speaks with one voice (Ana). Use the button to hear it.':'The voice has not loaded yet.'}</small>
    <div><button class="btn ghost" data-act="testvoice">Test voice</button></div></section>
-  <section><h3>Letter sounds</h3><small>Tap a letter to record it (needs microphone permission; may not work when opened from a link), or choose a short audio file under 250 KB. Letters without a recording use the computer voice. Green means recorded.</small>
-   <div class="snd">${AZ.map(L=>`<button class="${recState===L?'rec':S.rec[L.toLowerCase()]?'has':''}" data-act="snd" data-arg="${L}">${L}</button>`).join('')}</div>
-   <div><button class="btn ghost" data-act="sndfile">Choose a file for the last letter tapped</button> <button class="btn ghost" data-act="sndclear">Remove all recordings</button></div></section>
-  <section><h3>Voice lines</h3><small>${Object.keys(S.missing||{}).length} lines have been spoken with this device's voice because they are not in clips.json. Copy the list and use <code>recorder/make_clips.py</code> to make clips for them in the same voice as the rest.</small>
+  <section><h3>Voice lines</h3><small>${Object.keys(S.missing||{}).length} lines could not be fully spoken because some words are not in clips.json. Copy the list and use <code>recorder/make_clips.py</code> to make clips for them in the same voice.</small>
    <div><button class="btn ghost" data-act="copymissing">Copy the list</button></div></section>
   <section><h3>Starting level</h3><small>${S.placed?'The quick game has been played or skipped.':'The quick game has not been played yet.'} It sets each activity's level from a few questions. Playing it again replaces her current levels.</small>
    <div><button class="btn ghost" data-act="quizredo">Play the quick game again</button></div></section>
@@ -2016,31 +1985,7 @@ function screenParent(msg=''){
   ${msg?`<section style="background:#FFF3C4"><span>${esc(msg)}</span>${msg.startsWith('Copy this')?`<textarea readonly id="copybox" rows="8">${esc(summaryText())}</textarea>`:''}</section>`:''}
   ${pTab==='progress'?progressHTML():settingsHTML()}</div>`);
 }
-let lastSnd='A',resetArm=0;
-async function recordLetter(L){
-  lastSnd=L;
-  if(recState){if(recStop)recStop();return}
-  if(!navigator.mediaDevices||!window.MediaRecorder){screenParent('Recording is not available here. Use "Choose a file" instead.');return}
-  try{
-    const st=await navigator.mediaDevices.getUserMedia({audio:true});
-    const mr=new MediaRecorder(st),chunks=[];recState=L;
-    mr.ondataavailable=e=>chunks.push(e.data);
-    mr.onstop=()=>{st.getTracks().forEach(t=>t.stop());recState=null;recStop=null;
-      const fr=new FileReader();fr.onload=()=>storeRec(L,fr.result,new Blob(chunks).size);fr.readAsDataURL(new Blob(chunks,{type:mr.mimeType}))};
-    recStop=()=>mr.stop();mr.start();screenParent(`Recording ${L}… tap ${L} again to stop (it stops by itself after 2 seconds).`);
-    setTimeout(()=>{if(recStop)recStop()},2000);
-  }catch(e){recState=null;recStop=null;screenParent('The microphone is not available here. Use "Choose a file" instead.')}
-}
-function storeRec(L,url,size){
-  if(size>250*1024){screenParent('That clip is too big. Keep each sound under 250 KB.');return}
-  S.rec[L.toLowerCase()]=url;save();
-  if(!storageOk){delete S.rec[L.toLowerCase()];screenParent('There was no room to save that sound.');return}
-  screenParent(`Saved the sound for ${L}.`);playRec(url);
-}
-$('#sndfile').addEventListener('change',e=>{
-  const f=e.target.files[0];e.target.value='';if(!f)return;
-  const fr=new FileReader();fr.onload=()=>storeRec(lastSnd,fr.result,f.size);fr.readAsDataURL(f);
-});
+let resetArm=0;
 
 /* ---------- events ---------- */
 app.addEventListener('click',e=>{
@@ -2078,9 +2023,6 @@ app.addEventListener('click',e=>{
    case 'count':countObj(t);break;
    case 'hello':{const w=nameOf(arg);sayParts(w.say);t.animate&&t.animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:400});break}
    case 'testvoice':sayParts(["Hello! Let's learn some letters and numbers.",{sound:'b'},{sound:'s'}]);break;
-   case 'snd':recordLetter(arg);break;
-   case 'sndfile':$('#sndfile').click();break;
-   case 'sndclear':S.rec={};save();screenParent('Removed all recordings.');break;
    case 'reset':
      if(Date.now()-resetArm<4000){const keep=S.name;S=defaults();S.name=keep;save();screenParent('Progress reset.')}
      else{resetArm=Date.now();t.textContent='Tap again to confirm';setTimeout(()=>{const b=$('#resetBtn');if(b&&Date.now()-resetArm>=3900)b.textContent='Reset all progress'},4000)}
@@ -2090,7 +2032,6 @@ app.addEventListener('click',e=>{
 app.addEventListener('pointerdown',()=>{if(R&&R.cur&&!R.lock)armHint()});
 app.addEventListener('input',e=>{
   if(e.target.id==='pName'){S.name=e.target.value.trim();save()}
-  if(e.target.id==='pRate'){S.rate=+e.target.value;save()}
   if(e.target.id==='pMVol'){S.musicVol=+e.target.value;save();applyMusic()}
 });
 app.addEventListener('change',e=>{
@@ -2101,7 +2042,6 @@ app.addEventListener('change',e=>{
   if(e.target.id==='pBreak'){S.breakMin=+e.target.value;save()}
   if(e.target.id==='pBreakLen'){S.breakLen=+e.target.value;save()}
   if(e.target.id==='pMusic'){S.music=e.target.checked;save();if(S.music)startMusic();else stopMusic()}
-  if(e.target.id==='pVoice'){S.voice=e.target.value;voice=null;save()}
 });
 /* hold the gear for 2.5 s to open the grown-ups area */
 let holdT=null;
