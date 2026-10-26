@@ -366,6 +366,9 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .mbubble{display:flex;align-items:center;gap:10px;background:#fff;border-radius:22px;padding:8px 14px;box-shadow:0 5px 0 var(--sky2);font:700 clamp(18px,4vmin,30px) var(--f-display);color:var(--ink)}
 .mbubble .hphead{width:48px;height:48px;flex:none}
 .mbubble .hphead svg,.mbubble .hphead img{width:100%;height:100%}
+.sent{font:700 clamp(24px,6vmin,46px) var(--f-display);color:var(--ink);background:#fff;border-radius:24px;padding:14px 20px;box-shadow:0 6px 0 var(--sky2);max-width:92%;line-height:1.3}
+.sent u{display:inline-block;min-width:3.2em;border-bottom:5px solid var(--purple);text-decoration:none;color:var(--purple)}
+.sent b{color:var(--purple)}
 </style>
 
 <div id="app"></div>
@@ -393,6 +396,13 @@ const SIGHT=[
  ['the','and','is','it','in','you','my','we','I','to'],
  ['he','she','was','are','can','see','go','no','do','so','me','on','up','at','for','said','have','like','they'],
  ['with','that','this','what','come','play','look','want','little','one','here','down','good','big','not','but','all','out','then']];
+
+const HARDW=[["train", "🚂"], ["house", "🏠"], ["plane", "✈️"], ["horse", "🐴"], ["tiger", "🐯"], ["snake", "🐍"], ["apple", "🍎"], ["grape", "🍇"], ["chair", "🪑"], ["clock", "🕐"], ["cloud", "☁️"], ["queen", "👸"], ["sheep", "🐑"], ["whale", "🐋"], ["snail", "🐌"], ["spoon", "🥄"], ["zebra", "🦓"], ["bread", "🍞"], ["mouse", "🐭"], ["robot", "🤖"], ["pizza", "🍕"], ["tooth", "🦷"], ["shark", "🦈"], ["beach", "🏖️"], ["plant", "🌱"]];
+const HARDW2=[["cherry", "🍒"], ["orange", "🍊"], ["rabbit", "🐰"], ["monkey", "🐵"], ["rocket", "🚀"], ["flower", "🌸"], ["castle", "🏰"], ["dragon", "🐉"], ["pencil", "✏️"], ["guitar", "🎸"], ["turtle", "🐢"], ["penguin", "🐧"], ["banana", "🍌"], ["pumpkin", "🎃"], ["dolphin", "🐬"], ["giraffe", "🦒"], ["octopus", "🐙"], ["umbrella", "☂️"], ["rainbow", "🌈"], ["dinosaur", "🦕"], ["elephant", "🐘"], ["chicken", "🐔"], ["spider", "🕷️"], ["window", "🪟"], ["basket", "🧺"]];
+const SIGHT_ADV=[["because", "before", "around", "people", "their", "would", "could", "there", "where", "when", "were", "from", "your", "some", "came", "made", "know", "night", "right"], ["through", "thought", "together", "another", "friend", "school", "always", "every", "other", "animal", "water", "family", "mother", "father", "sister", "brother", "garden", "kitchen", "morning"], ["beautiful", "different", "favorite", "important", "remember", "special", "surprise", "mountain", "neighbor", "imagine", "journey", "trouble", "whisper", "exciting", "adventure", "enough", "believe", "answer", "between"]];
+const SENT=[[["I ___ a red ball.", "have", ["are", "the"]], ["The cat ___ on the mat.", "sat", ["sit", "sad"]], ["She ___ to the park.", "went", ["want", "wet"]], ["We ___ happy today.", "are", ["is", "am"]], ["The sun is ___.", "hot", ["hat", "hit"]], ["My dog can ___ fast.", "run", ["ran", "rug"]], ["I like to ___ books.", "read", ["rid", "ride"]], ["The bird can ___.", "fly", ["fry", "flu"]], ["He ___ a big apple.", "ate", ["eat", "at"]], ["Mom ___ me a hug.", "gave", ["give", "gaze"]]], [["The boy ___ his bike to school.", "rides", ["ride", "riding"]], ["We saw two ___ at the zoo.", "monkeys", ["monkey", "monkies"]], ["She is ___ than her brother.", "taller", ["tall", "tallest"]], ["It was raining, so I took an ___.", "umbrella", ["umbrellas", "apple"]], ["The children are playing ___ the garden.", "in", ["it", "an"]], ["I ___ my homework yesterday.", "finished", ["finish", "finishing"]], ["A baby cat is called a ___.", "kitten", ["puppy", "cub"]], ["We eat breakfast in the ___.", "morning", ["night", "evening"]], ["He is the ___ boy in class.", "fastest", ["fast", "faster"]], ["The bird built a ___ in the tree.", "nest", ["rest", "best"]]], [["She was ___ because she lost her toy.", "upset", ["upsets", "upstairs"]], ["The ___ of the story was very exciting.", "ending", ["ended", "endless"]], ["Please ___ the door when you leave.", "close", ["clothes", "cloth"]], ["We should ___ our teeth every day.", "brush", ["brash", "bush"]], ["He ran quickly, ___ he missed the bus.", "but", ["bat", "bun"]], ["I want to be a doctor ___ I grow up.", "when", ["where", "went"]], ["The ___ shone brightly in the night sky.", "moon", ["mood", "moan"]], ["They ___ to the library every Friday.", "walk", ["wake", "wall"]], ["My sister is ___ than me.", "older", ["old", "oldest"]], ["The ___ was so heavy that I could not lift it.", "suitcase", ["suit", "staircase"]]]];
+const OPP=[["hot", "cold"], ["big", "small"], ["up", "down"], ["happy", "sad"], ["fast", "slow"], ["day", "night"], ["open", "close"], ["in", "out"], ["wet", "dry"], ["old", "new"], ["tall", "short"], ["hard", "soft"], ["full", "empty"], ["light", "dark"], ["early", "late"], ["loud", "quiet"], ["clean", "dirty"], ["near", "far"], ["strong", "weak"], ["thick", "thin"], ["right", "wrong"], ["push", "pull"], ["first", "last"], ["start", "stop"], ["brave", "scared"], ["easy", "difficult"], ["buy", "sell"], ["above", "below"], ["always", "never"], ["shout", "whisper"]];
+const RHYME=[["cat", "hat", "bat", "mat", "rat"], ["dog", "log", "frog", "fog"], ["sun", "run", "fun", "bun"], ["cake", "lake", "snake", "bake"], ["tree", "bee", "three", "key"], ["star", "car", "jar", "far"], ["night", "light", "kite", "bright"], ["rain", "train", "plane", "chain"], ["boat", "coat", "goat", "float"], ["ring", "king", "sing", "wing"], ["book", "look", "cook", "hook"], ["bear", "chair", "hair", "pear"], ["moon", "spoon", "balloon", "soon"], ["bell", "shell", "well", "tell"], ["fish", "dish", "wish"], ["snow", "blow", "glow", "grow"]];
 /* ---------- original flat-colour pictures (inline SVG, 100x100). {x} tokens are colours ---------- */
 const CL={r:'#F2564B',o:'#FF9A2E',y:'#FFC928',g:'#4CC152',G:'#2E8F34',t:'#1FB6B6',b:'#3D8BFF',p:'#9B6BE8',k:'#FF7DB0',q:'#FFB5D2',w:'#FFFFFF',n:'#B77B45',d:'#7A4A2A',s:'#B8C2DA',i:'#1B2A55',l:'#FFE4B8'};
 const eyes2=(y,dx=12,r=4)=>`<circle cx="${50-dx}" cy="${y}" r="${r}" fill="{i}" stroke="none"/><circle cx="${50+dx}" cy="${y}" r="${r}" fill="{i}" stroke="none"/>`;
@@ -914,7 +924,10 @@ const MENUS={
   {id:'lsound',c:1,glyph:'🔊🐱',gate:null},
   {id:'lword',c:3,glyph:'c-a-t',gate:'lsound'},
   {id:'ltrace',c:7,glyph:'✏️A',gate:null},
-  {id:'lsight',c:2,glyph:'the',gate:null}]},
+  {id:'lsight',c:2,glyph:'the',gate:null},
+  {id:'lsent',c:6,glyph:'I ___',gate:null},
+  {id:'lopp',c:0,glyph:'hot ↔ cold',gate:null},
+  {id:'lrhyme',c:3,glyph:'cat · hat',gate:null}]},
  numbers:{title:'Numbers',items:[
   {id:'nfind',c:0,glyph:'7',gate:null},
   {id:'ncount',c:2,glyph:'● ● ●',gate:null},
@@ -1122,16 +1135,35 @@ const GEN={
     choices:shuffle([L,...others]).map(x=>({html:x,ok:x===L}))};
  },
  lword(lv,fixed){
-  const all=[...WORDS,...BLENDS],w=(fixed&&all.find(x=>x[0]===fixed))||pick(lv===2?BLENDS:WORDS),word=w[0];
-  const extra=shuffle(AZ.map(x=>x.toLowerCase()).filter(x=>!word.includes(x))).slice(0,lv===0?2:4);
+  const all=[...WORDS,...BLENDS,...HARDW,...HARDW2],w=(fixed&&all.find(x=>x[0]===fixed))||pick(lv===0?WORDS:lv===1?[...BLENDS,...HARDW]:[...HARDW,...HARDW2]),word=w[0];
+  const extra=shuffle(AZ.map(x=>x.toLowerCase()).filter(x=>!word.includes(x))).slice(0,lv===0?2:lv===1?3:4);
   return {key:word,kind:'build',word,say:[`Let's build the word ${word}.`,'Tap the sounds in order.'],
     stage:`<div class="big-emoji mascot">${w[1]}</div>`,tiles:shuffle([...word.split(''),...extra])};
  },
  lsight(lv,fixed){
-  const pool=SIGHT.slice(0,lv+1).flat(),all=SIGHT.flat(),W=fixed&&all.includes(fixed)?fixed:pick(pool),n=[3,4,4][lv];
+  const T=[...SIGHT,...SIGHT_ADV],pool=(lv===0?T.slice(0,2):lv===1?T.slice(2,5):T.slice(4)).flat(),all=T.flat(),W=fixed&&all.includes(fixed)?fixed:pick(pool),n=[3,4,4][lv];
   const opts=shuffle([W,...shuffle(pool.filter(x=>x!==W)).slice(0,n-1)]);
   return {key:W,say:['Find the word',W],stage:`<div class="mascot">${charSVG('w','?')}</div>`,
     choices:opts.map(x=>({html:esc(x),word:1,ok:x===W}))};
+ },
+ lsent(lv,fixed){
+  const L=SENT[lv],i=fixed&&fixed.startsWith('s:')?+fixed.split(':')[1]%L.length:rnd(L.length),[txt,ans,bad]=L[i];
+  const sp=txt.replace('___','blank'),opts=shuffle([ans,...bad]);
+  return {key:`s:${i}`,ptext:'Which word fits in the blank?',say:['Which word fits in the blank?',sp],
+    stage:`<div class="sent mascot">${esc(txt).replace('___','<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>')}</div>`,reveal:`<div class="sent">${esc(txt).replace('___','<u>'+esc(ans)+'</u>')}</div>`,
+    choices:opts.map(x=>({html:esc(x),word:1,ok:x===ans}))};
+ },
+ lopp(lv,fixed){
+  const pool=lv===0?OPP.slice(0,12):lv===1?OPP.slice(0,22):OPP,all=OPP.flat(),W=fixed&&all.includes(fixed)?fixed:pick(pool.flat()),pr=OPP.find(p=>p.includes(W)),ans=pr[0]===W?pr[1]:pr[0];
+  const bad=shuffle(pool.filter(p=>p!==pr).flat().filter(x=>x!==W&&x!==ans)).slice(0,[2,3,3][lv]);
+  return {key:W,say:['What is the opposite of',W+'?'],stage:`<div class="sent mascot"><b>${esc(W)}</b> ↔ ?</div>`,reveal:`<div class="sent"><b>${esc(W)}</b> ↔ <b>${esc(ans)}</b></div>`,
+    choices:shuffle([ans,...bad]).map(x=>({html:esc(x),word:1,ok:x===ans}))};
+ },
+ lrhyme(lv,fixed){
+  const all=RHYME.flat(),g=(fixed&&RHYME.find(r=>r.includes(fixed)))||pick(RHYME),W=fixed&&all.includes(fixed)?fixed:pick(g),ans=pick(g.filter(x=>x!==W));
+  const bad=shuffle(RHYME.filter(r=>r!==g).flat()).slice(0,[2,3,3][lv]);
+  return {key:W,say:['Which word rhymes with',W+'?'],stage:`<div class="sent mascot"><b>${esc(W)}</b></div>`,reveal:`<div class="sent"><b>${esc(W)}</b> rhymes with <b>${esc(ans)}</b></div>`,
+    choices:shuffle([ans,...bad]).map(x=>({html:esc(x),word:1,ok:x===ans}))};
  },
  nseq(lv,fixed){
   let mode,start,step,idx=0;
@@ -1336,7 +1368,7 @@ const GEN={
     choices:vals.map(v=>({html:v,ok:v===ans}))};
  }
 };
-const ACT_NAME={ttime:'Read the Clock',tmatch:'Find the Clock',anames:'Name the Animal',asound:'Animal Sounds',ahome:'Where Animals Live',ntimes:'Times Tables',narray:'Rows and Columns',nrepeat:'Add It Up Fast',nshare:'Share Equally',sshape:'Shapes and Colours',spattern:'What Comes Next?',lsight: 'Read Words', 'nseq': 'Count to 100', 'ltrace': 'Trace Letters', 'ntrace': 'Trace Numbers', 'lfind': 'Find the Letter', 'lsound': 'Letter Sounds', 'lword': 'Build a Word', 'nfind': 'Find the Number', 'ncount': 'Count Them', 'nadd': 'Add Up', 'nsub': 'Take Away', 'nmult': 'Times and Groups', 'lmatch': 'Big and Small Letters', 'ncompare': 'More or Fewer?'};
+const ACT_NAME={ttime:'Read the Clock',tmatch:'Find the Clock',anames:'Name the Animal',asound:'Animal Sounds',ahome:'Where Animals Live',ntimes:'Times Tables',narray:'Rows and Columns',nrepeat:'Add It Up Fast',nshare:'Share Equally',sshape:'Shapes and Colours',spattern:'What Comes Next?',lsight: 'Read Words','lsent':'Finish the Sentence','lopp':'Opposites','lrhyme':'Rhymes', 'nseq': 'Count to 100', 'ltrace': 'Trace Letters', 'ntrace': 'Trace Numbers', 'lfind': 'Find the Letter', 'lsound': 'Letter Sounds', 'lword': 'Build a Word', 'nfind': 'Find the Number', 'ncount': 'Count Them', 'nadd': 'Add Up', 'nsub': 'Take Away', 'nmult': 'Times and Groups', 'lmatch': 'Big and Small Letters', 'ncompare': 'More or Fewer?'};
 
 /* ---------- round engine ---------- */
 let R=null;
@@ -1560,7 +1592,7 @@ function renderQ(){
   }
   const slots=q.kind==='build'?`<div class="slots" id="slots">${q.word.split('').map(()=>'<div class="slot"></div>').join('')}</div>`:'';
   const lname=Object.fromEntries(Object.entries(LNAME).map(([k,v])=>[v,k.toUpperCase()])),sy=(q.say||[]).filter(x=>typeof x==='string'||(x&&x.sound));
-  const ptxt=sy.map((x,i)=>typeof x!=='string'?`<b>${esc(x.sound.toUpperCase())}</b>`:/letter$/i.test(sy[i-1]||'')&&lname[x.toLowerCase()]?`<b>${lname[x.toLowerCase()]}</b>`:esc(x)).join(' ').trim();
+  const ptxt=q.ptext!==undefined?q.ptext:sy.map((x,i)=>typeof x!=='string'?`<b>${esc(x.sound.toUpperCase())}</b>`:/letter$/i.test(sy[i-1]||'')&&lname[x.toLowerCase()]?`<b>${lname[x.toLowerCase()]}</b>`:esc(x)).join(' ').trim();
   render(`<div class="topbar">${ibtn('leave',ICON.back,'Back')}<div class="pips">${pips}</div><div class="buddy" id="buddy">${princessSVG('n',{head:true})}</div>${ibtn('replay',ICON.speaker,'Hear again')}</div>
   ${ptxt&&q.kind!=='build'?`<div class="qprompt">${ptxt}</div>`:''}
   <div class="stage">${q.stage}${slots}</div><div class="choices" id="choices">${ch}</div>`);
@@ -1871,7 +1903,8 @@ function prettyKey(id,k){
    case 'nsub':return k.replace('-',' − ');
    case 'nmult':{if(k[0]==='e'){const [a,b]=k.slice(2).split('x');return `${a} × ${b}`}if(k[0]==='g'){const [g,s]=k.slice(2).split('x');return `${g} groups of ${s}`}return `Counting by ${k.split(':')[1]}s`}
    case 'nseq':{const [m,st,step]=k.split(':');return m==='n'?`What comes after ${+st+2*+step}`:m==='b'?`What comes before ${st}`:`Missing number near ${st}`}
-   case 'lword':case 'lsight':return `"${k}"`;
+   case 'lword':case 'lsight':case 'lopp':case 'lrhyme':return `"${k}"`;
+   case 'lsent':return 'Sentence '+(+k.split(':')[1]+1);
    case 'lfind':return `Letter ${k} (finding)`;
    case 'lsound':return `Letter ${k} (sound)`;
    case 'ltrace':return `Tracing ${k}`;
