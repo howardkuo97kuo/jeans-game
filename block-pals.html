@@ -567,7 +567,7 @@ async function sayParts(parts){
   for(const p of parts){
     if(my!==sayTok)return;
     if(typeof p==='number'){await wait(p);continue}
-    if(p.sound){const l=p.sound.toLowerCase();if(S.rec[l])await playRec(S.rec[l]);else if(!(await playClip('snd_'+l,STOP_CUT[l])))await ttsSpeak(PHON[l]);continue}
+    if(p.sound){const l=p.sound.toLowerCase();if(S.rec[l])await playRec(S.rec[l]);else if(p.word&&await playClip('ph_'+l))continue;else if(!(await playClip('snd_'+l,STOP_CUT[l])))await ttsSpeak(PHON[l]);continue}
     await speak(p,my);
   }
   if(my===sayTok)duck(false);
@@ -1576,7 +1576,7 @@ function finishRound(){
 }
 function nameOf(key){
   const [d,v]=key.split(':');
-  return d==='L'?{say:[`Hello! I'm the letter ${LNAME[v.toLowerCase()]}.`,{sound:v},{sound:v}],spoken:`letter ${LNAME[v.toLowerCase()]}`}
+  return d==='L'?{say:[`Hello! I'm the letter ${LNAME[v.toLowerCase()]}.`,{sound:v,word:1}],spoken:`letter ${LNAME[v.toLowerCase()]}`}
     :{say:[`Hello! I'm number ${NUMW[+v]}.`,`I am made of ${NUMW[+v]} ${+v===1?'block':'blocks'}!`],spoken:`number ${NUMW[+v]}`};
 }
 function celebrate({stars,next,leveled,f,id,aw,bonus,combo,speedy,newDress,gift}){

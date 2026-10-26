@@ -9,6 +9,8 @@ The same thing runs in the cloud from the "Make voice clips" GitHub Action (Acti
 import argparse, asyncio, base64, json, re, sys, tempfile, pathlib
 
 PHON = {'a':'aah','b':'buh','c':'kuh','d':'duh','e':'eh','f':'fff','g':'guh','h':'huh','i':'ih','j':'juh','k':'kuh','l':'lll','m':'mmm','n':'nnn','o':'aw','p':'puh','q':'kwuh','r':'rrr','s':'sss','t':'tuh','u':'uh','v':'vvv','w':'wuh','x':'ks','y':'yuh','z':'zzz'}
+# Letter sound followed by a sample word, used for the 'ph_' clips (letter introductions)
+PHON_WORD = {'a': 'ah. Apple', 'b': 'buh. Ball', 'c': 'kuh. Cat', 'd': 'duh. Dog', 'e': 'eh. Egg', 'f': 'ff. Fish', 'g': 'guh. Goat', 'h': 'huh. Hat', 'i': 'ih. Igloo', 'j': 'juh. Jam', 'k': 'kuh. Kite', 'l': 'll. Lion', 'm': 'mm. Moon', 'n': 'nn. Nest', 'o': 'aw. Octopus', 'p': 'puh. Pig', 'q': 'kwuh. Queen', 'r': 'rr. Rabbit', 's': 'ss. Sun', 't': 'tuh. Tree', 'u': 'uh. Umbrella', 'v': 'vv. Van', 'w': 'wuh. Watch', 'x': 'ks. Fox', 'y': 'yuh. Yo-yo', 'z': 'zz. Zebra'}
 
 ap = argparse.ArgumentParser()
 ap.add_argument('lines')
@@ -23,7 +25,12 @@ clips = json.load(open(a.clips))
 todo = []  # (key, text)
 if a.all:
     for k in clips:
+        if k.startswith('ph_'): continue
         todo.append((k, PHON[k[4:]] if k.startswith('snd_') and k[4:] in PHON else k))
+seen = {k for k, _ in todo}
+for l, t in PHON_WORD.items():
+    if a.all or 'ph_' + l not in clips:
+        todo.append(('ph_' + l, t))
 seen = {k for k, _ in todo}
 for line in open(a.lines, encoding='utf-8'):
     for w in re.findall(r"[a-z0-9'\-]+", line.lower()):
