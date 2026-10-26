@@ -1,0 +1,28 @@
+name: Make voice clips
+on:
+  workflow_dispatch:
+    inputs:
+      voice:
+        description: Edge TTS voice
+        default: en-GB-SoniaNeural
+      all:
+        description: Redo every clip in this voice (true) or only add missing words (false)
+        default: 'true'
+permissions:
+  contents: write
+jobs:
+  clips:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - run: python recorder/make_clips.py recorder/missing-lines.txt --voice "${{ inputs.voice }}" ${{ inputs.all == 'true' && '--all' || '' }}
+      - run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add clips.json
+          git diff --cached --quiet || git commit -m "Regenerate voice clips (${{ inputs.voice }})"
+          git push
