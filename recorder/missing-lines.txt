@@ -1,0 +1,434 @@
+Which small letter matches tee?
+Which small letter matches bee?
+Which small letter matches you?
+Which small letter matches see?
+Which small letter matches ay?
+Which small letter matches eff?
+Which small letter matches jee?
+Which small letter matches dee?
+Which small letter matches en?
+Which small letter matches oh?
+Which small letter matches zee?
+Which small letter matches ell?
+Which small letter matches ess?
+Which small letter matches kay?
+Which small letter matches cue?
+Which small letter matches why?
+Which small letter matches pee?
+Which small letter matches are?
+Which small letter matches ex?
+Which small letter matches aitch?
+Which small letter matches em?
+Which small letter matches vee?
+Which small letter matches ee?
+Which small letter matches double you?
+Which small letter matches eye?
+Which small letter matches jay?
+Which big letter matches eff?
+Which big letter matches oh?
+Which big letter matches you?
+Which big letter matches ex?
+Which big letter matches bee?
+Which big letter matches eye?
+Which big letter matches ell?
+Which big letter matches kay?
+Which big letter matches ee?
+Which big letter matches jee?
+Which big letter matches see?
+Which big letter matches en?
+Which big letter matches dee?
+Which big letter matches ay?
+Which big letter matches vee?
+Which big letter matches pee?
+Which big letter matches why?
+Which big letter matches tee?
+quilt starts with which letter?
+key starts with which letter?
+insect starts with which letter?
+pizza starts with which letter?
+banana starts with which letter?
+queen starts with which letter?
+net starts with which letter?
+jam jar starts with which letter?
+goat starts with which letter?
+jellyfish starts with which letter?
+juice starts with which letter?
+guitar starts with which letter?
+egg starts with which letter?
+zipper starts with which letter?
+yo-yo starts with which letter?
+house starts with which letter?
+rainbow starts with which letter?
+igloo starts with which letter?
+coin starts with which letter?
+hat starts with which letter?
+volcano starts with which letter?
+yarn starts with which letter?
+lamp starts with which letter?
+flower starts with which letter?
+orange starts with which letter?
+leaf starts with which letter?
+cake starts with which letter?
+robot starts with which letter?
+yacht starts with which letter?
+Find the colour yellow
+Find the colour red
+Find the colour green
+Find the colour pink
+Find the colour blue
+Find the colour orange
+Find the colour purple
+Find the rectangle
+Find the diamond
+Find the heart
+Find the triangle
+Find the star
+Find the oval
+Find the square
+Find the circle
+Find the green circle
+Find the blue star
+Find the purple star
+Find the purple heart
+Find the blue diamond
+Find the purple diamond
+Find the red square
+Find the yellow circle
+Find the blue oval
+Find the orange square
+Find the red diamond
+Find the red oval
+Find the pink heart
+Find the pink oval
+Find the orange star
+Find the red star
+Find the pink square
+Find the red rectangle
+Find the yellow star
+Find the orange triangle
+Find the green heart
+Find the red heart
+Find the green rectangle
+Find the orange circle
+Find the purple oval
+Find the blue heart
+Find the blue square
+Find the pink diamond
+Find the blue circle
+Find the yellow oval
+Find the red circle
+Find the green triangle
+Find the pink triangle
+Find the yellow rectangle
+Find the green square
+Find the yellow square
+What time is it?
+Find the clock that shows twelve o'clock
+Find the clock that shows five o'clock
+Find the clock that shows seven o'clock
+Find the clock that shows three o'clock
+Find the clock that shows one o'clock
+Find the clock that shows ten o'clock
+Find the clock that shows nine o'clock
+Find the clock that shows eight o'clock
+Find the clock that shows six o'clock
+Find the clock that shows two o'clock
+Find the clock that shows four o'clock
+Find the clock that shows eleven o'clock
+Find the clock that shows half past five
+Find the clock that shows half past three
+Find the clock that shows half past two
+Find the clock that shows half past nine
+Find the clock that shows half past one
+Find the clock that shows half past six
+Find the clock that shows half past eight
+Find the clock that shows half past eleven
+Find the clock that shows half past seven
+Find the clock that shows half past twelve
+Find the clock that shows half past four
+Find the clock that shows half past ten
+Find the clock that shows quarter past ten
+Find the clock that shows quarter to three
+Find the clock that shows twelve fifty five
+Find the clock that shows quarter past three
+Find the clock that shows ten fifty five
+Find the clock that shows quarter past twelve
+Find the clock that shows ten fifty
+Find the clock that shows two thirty five
+Find the clock that shows three fifty five
+Find the clock that shows eight ten
+Find the clock that shows quarter past two
+Find the clock that shows ten twenty-five
+Find the clock that shows seven thirty five
+Find the clock that shows nine fifty five
+Find the clock that shows eleven twenty
+Find the clock that shows quarter to seven
+Find the clock that shows twelve forty
+Find the clock that shows quarter past four
+Find the clock that shows four five
+Find the clock that shows eleven thirty five
+Find the clock that shows quarter past five
+Find the clock that shows four twenty
+Find the clock that shows twelve twenty-five
+Find the clock that shows quarter to nine
+Find the clock that shows eleven fifty
+Find the clock that shows two five
+Find the clock that shows one twenty
+Find the clock that shows ten ten
+Find the clock that shows quarter to twelve
+Find the clock that shows eleven ten
+Find the clock that shows seven twenty
+Find the clock that shows one fifty five
+Find the clock that shows five fifty five
+Find the clock that shows five five
+Find the clock that shows seven forty
+Find the clock that shows quarter past eight
+Find the clock that shows quarter to five
+Find the clock that shows five forty
+Find the clock that shows six forty
+Find the clock that shows eight twenty
+Find the clock that shows six twenty-five
+Find the clock that shows two fifty
+Find the clock that shows five fifty
+Find the clock that shows five twenty
+Find the clock that shows ten twenty
+Find the clock that shows two twenty-five
+Find the cat
+Find the lion
+Find the fish
+Find the elephant
+Find the goat
+Find the bear
+Find the whale
+Find the zebra
+Find the frog
+Find the dog
+Find the horse
+Find the mouse
+Find the monkey
+Find the tiger
+Find the pig
+Find the jellyfish
+Find the owl
+Find the duck
+Find the rabbit
+Find the octopus
+What animal is this?
+Which animal says maa?
+Which animal says woof?
+Which animal says roar?
+Which animal says neigh?
+Which animal says toot?
+Which animal says oink?
+Which animal says meow?
+Which animal says grr?
+Which animal says hoot?
+Which animal says squeak?
+Which animal says ribbit?
+Which animal says quack?
+Which animal says ooh ooh?
+Where does the tiger live?
+Where does the duck live?
+Where does the fish live?
+Where does the zebra live?
+Where does the cat live?
+Where does the dog live?
+Where does the mouse live?
+Where does the bear live?
+Where does the monkey live?
+Where does the pig live?
+Where does the owl live?
+Where does the whale live?
+Where does the octopus live?
+Where does the elephant live?
+Where does the horse live?
+Where does the lion live?
+Where does the rabbit live?
+Where does the frog live?
+Where does the goat live?
+Where does the jellyfish live?
+five times three. What does it make?
+ten times five. What does it make?
+five times one. What does it make?
+ten times two. What does it make?
+five times five. What does it make?
+two times five. What does it make?
+five times two. What does it make?
+ten times four. What does it make?
+five times four. What does it make?
+ten times three. What does it make?
+two times four. What does it make?
+ten times one. What does it make?
+two times one. What does it make?
+two times two. What does it make?
+two times three. What does it make?
+two times what makes eight?
+five times ten. What does it make?
+three times nine. What does it make?
+five times what makes forty five?
+two times seven. What does it make?
+four times what makes twelve?
+two times what makes two?
+ten times what makes one hundred?
+ten times what makes sixty?
+two times six. What does it make?
+three times what makes eighteen?
+four times one. What does it make?
+three times one. What does it make?
+four times five. What does it make?
+five times what makes ten?
+three times what makes twenty-seven?
+ten times what makes forty?
+three times what makes thirty?
+ten times what makes ten?
+four times two. What does it make?
+two times what makes fourteen?
+five times what makes forty?
+four times eight. What does it make?
+four times what makes thirty two?
+two times nine. What does it make?
+three times six. What does it make?
+four times six. What does it make?
+four times seven. What does it make?
+five times what makes thirty five?
+two times what makes four?
+five times what makes fifteen?
+ten times what makes eighty?
+three times seven. What does it make?
+three times eight. What does it make?
+ten times eight. What does it make?
+ten times what makes twenty?
+ten times ten. What does it make?
+five times six. What does it make?
+five times seven. What does it make?
+nine times one. What does it make?
+nine times what makes fifty four?
+six times what makes fifty four?
+eight times what makes thirty two?
+seven times seven. What does it make?
+seven times what makes seventy?
+six times five. What does it make?
+eight times what makes sixteen?
+ten times what makes fifty?
+seven times what makes sixty three?
+six times two. What does it make?
+five times what makes thirty?
+four times what makes twenty?
+seven times eight. What does it make?
+eight times six. What does it make?
+seven times five. What does it make?
+nine times what makes forty five?
+nine times what makes seventy two?
+three times five. What does it make?
+four times what makes thirty six?
+ten times six. What does it make?
+eight times two. What does it make?
+five times what makes five?
+six times ten. What does it make?
+six times seven. What does it make?
+four times what makes four?
+three times ten. What does it make?
+two times eight. What does it make?
+six times what makes twenty-four?
+two times what makes six?
+eight times five. What does it make?
+seven times what makes forty nine?
+six times six. What does it make?
+two times what makes eighteen?
+Which times sum matches the rows and columns?
+four groups of two. Which adding sum matches?
+four groups of five. Which adding sum matches?
+two groups of five. Which adding sum matches?
+four groups of three. Which adding sum matches?
+two groups of two. Which adding sum matches?
+three groups of five. Which adding sum matches?
+three groups of three. Which adding sum matches?
+three groups of two. Which adding sum matches?
+two groups of three. Which adding sum matches?
+five groups of two. Which adding sum matches?
+five groups of three. Which adding sum matches?
+five groups of ten. Which adding sum matches?
+five groups of five. Which adding sum matches?
+four groups of ten. Which adding sum matches?
+two groups of ten. Which adding sum matches?
+five groups of four. Which adding sum matches?
+three groups of four. Which adding sum matches?
+two groups of four. Which adding sum matches?
+four groups of four. Which adding sum matches?
+three groups of ten. Which adding sum matches?
+two things are shared equally between two friends. How many does each friend get?
+six things are shared equally between two friends. How many does each friend get?
+ten things are shared equally between two friends. How many does each friend get?
+eight things are shared equally between two friends. How many does each friend get?
+four things are shared equally between two friends. How many does each friend get?
+five things are shared equally between five friends. How many does each friend get?
+six things are shared equally between three friends. How many does each friend get?
+nine things are shared equally between three friends. How many does each friend get?
+ten things are shared equally between five friends. How many does each friend get?
+fifteen things are shared equally between five friends. How many does each friend get?
+thirty things are shared equally between five friends. How many does each friend get?
+fifteen things are shared equally between three friends. How many does each friend get?
+twelve things are shared equally between three friends. How many does each friend get?
+eighteen things are shared equally between three friends. How many does each friend get?
+twenty-five things are shared equally between five friends. How many does each friend get?
+three things are shared equally between three friends. How many does each friend get?
+twenty things are shared equally between five friends. How many does each friend get?
+thirty five things are shared equally between five friends. How many does each friend get?
+eight things are shared equally between four friends. How many does each friend get?
+twenty-one things are shared equally between three friends. How many does each friend get?
+twelve things are shared equally between two friends. How many does each friend get?
+forty things are shared equally between five friends. How many does each friend get?
+twelve things are shared equally between four friends. How many does each friend get?
+fourteen things are shared equally between two friends. How many does each friend get?
+thirty two things are shared equally between four friends. How many does each friend get?
+twenty things are shared equally between four friends. How many does each friend get?
+twenty-eight things are shared equally between four friends. How many does each friend get?
+twenty-four things are shared equally between three friends. How many does each friend get?
+twenty-four things are shared equally between four friends. How many does each friend get?
+Which group has more? Tap the group.
+Which group has fewer? Tap the group.
+ten times five. How many altogether?
+five times five. How many altogether?
+two times five. How many altogether?
+two times two. How many altogether?
+ten times two. How many altogether?
+ten times four. How many altogether?
+ten times three. How many altogether?
+two times four. How many altogether?
+five times two. How many altogether?
+five times one. How many altogether?
+two times three. How many altogether?
+four times five. How many altogether?
+four times four. How many altogether?
+two times one. How many altogether?
+four times three. How many altogether?
+three times four. How many altogether?
+five times six. How many altogether?
+two times six. How many altogether?
+three times three. How many altogether?
+three times six. How many altogether?
+three times two. How many altogether?
+three times five. How many altogether?
+four times six. How many altogether?
+That is okay, try once more!
+Wonderful!
+Take your time, you can do it!
+Magical!
+You are a star!
+How lovely!
+Splendid, my friend!
+Let's visit the letter garden!
+Let's count in the castle!
+Let's do some magic multiplying!
+Let's see what time it is!
+Let's meet the animals!
+Let's find shapes and colours!
+Pick a gown for me!
+I love it!
+You reached your goal today! Here is a gift.
+The princess has a new gown to wear!
+Hello! I am Princess Rosa.
+3 in a row! Wonderful!
+5 in a row! Wonderful!
+8 in a row! Wonderful!
+12 in a row! Wonderful!

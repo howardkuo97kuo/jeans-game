@@ -333,6 +333,18 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .princess-hero::before,.princess-hero::after{content:"";position:absolute;width:16%;aspect-ratio:1;background:#FFD45C;clip-path:polygon(50% 0,62% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 36%);animation:twinkle 1.8s ease-in-out infinite}
 .princess-hero::before{left:-6%;top:12%}.princess-hero::after{right:-4%;top:30%;animation-delay:.9s;background:#FF8FB5}
 .hphead{animation:bob 3s ease-in-out infinite}
+.card.pick{grid-column:1/-1;flex-direction:row;gap:clamp(12px,3vmin,28px);min-height:clamp(110px,20vmin,200px)}
+.card.pick .art{min-height:0}.card.pick .art svg.princess{width:clamp(70px,16vmin,150px)}
+.card.pick .pickt{text-align:left}.card.pick small{font:700 clamp(13px,2.8vmin,20px) var(--f-body);opacity:.9;display:block}
+.card.pick>svg{width:clamp(40px,8vmin,70px);height:auto;flex:none}
+.card .art svg.princess{width:clamp(50px,12vmin,110px)}
+.wardrobe{flex:1;min-height:0;display:flex;flex-wrap:wrap;gap:clamp(12px,3vmin,30px);align-items:center;justify-content:center;overflow-y:auto}
+.swatches{display:grid;grid-template-columns:repeat(3,auto);gap:clamp(10px,2.4vmin,20px)}
+.swatch{width:clamp(70px,16vmin,130px);height:clamp(70px,16vmin,130px);border-radius:50%;background:#fff;box-shadow:0 6px 0 var(--sky2);display:grid;place-items:center;position:relative}
+.swatch i{width:62%;height:62%;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--b) 55%,var(--c))}
+.swatch.on{outline:6px solid var(--yellow)}.swatch.lock{opacity:.6;filter:grayscale(.6)}
+.swatch small{position:absolute;bottom:-8px;background:var(--ink);color:#fff;border-radius:10px;padding:1px 8px;font:700 12px var(--f-display)}
+.princess-hero.big .princess{width:100%}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
@@ -467,7 +479,7 @@ const OBJ=['apple','fish','star','car','flower','ladybug','ball','cake'];
 
 /* ---------- storage ---------- */
 const KEY='blockpals.v1';
-const defaults=()=>({name:'',stickers:{},newStickers:[],perfects:0,breakMin:15,breakLen:2,days:{},hints:true,music:true,musicVol:0.5,unlockAll:false,voice:'',rate:0.85,unlocked:[],act:{},rec:{},timer:true,bestCombo:0});
+const defaults=()=>({name:'',stickers:{},newStickers:[],perfects:0,breakMin:15,breakLen:2,days:{},hints:true,music:true,musicVol:0.5,unlockAll:false,voice:'',rate:0.85,unlocked:[],act:{},rec:{},timer:true,bestCombo:0,dress:0,stars:0,giftDay:'',missing:{}});
 function load(){try{return Object.assign(defaults(),JSON.parse(localStorage.getItem(KEY))||{})}catch(e){return defaults()}}
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
 let S=load(); let storageOk=true;
@@ -531,6 +543,7 @@ function clipPlan(text){
 async function speak(text,my){
   const plan=clipPlan(text);
   if(plan){for(const p of plan){if(my!==undefined&&my!==sayTok)return;if(typeof p==='number')await wait(p*1000);else await playClip(p)}return}
+  if(text&&text.length>2){S.missing=S.missing||{};const k=text.toLowerCase().replace(/\s+/g,' ').trim();if(!S.missing[k]&&Object.keys(S.missing).length<400){S.missing[k]=1;clearTimeout(speak._t);speak._t=setTimeout(save,1500)}}
   return ttsSpeak(text);
 }
 function ttsSpeak(text){return new Promise(res=>{
@@ -787,6 +800,7 @@ function screenHome(){
   stopSay();
   render(`<div class="home"><div class="hellorow">${goalRing()}<div class="hello"><span class="hphead">${princessSVG('happy',{head:true})}</span>Hi ${esc(nm())}!</div>${ibtn('music',S.music?ICON.music:ICON.musicOff,S.music?'Music on':'Music off')}</div>
   <div class="cards">
+   <button class="card pick" style="--c:${pal(7)[0]};--cd:${pal(7)[1]}" data-act="pick" data-arg="${recommend()}"><div class="art">${princessSVG('happy',{head:true})}</div><div class="pickt"><small>Princess picks for you</small><div class="glyph sm">${esc(ACT_NAME[recommend()])}</div></div>${ICON.play}</button>
    <button class="card" style="--c:${pal(5)[0]};--cd:${pal(5)[1]}" data-act="menu" data-arg="letters"><div class="art">${charSVG('a','A')}${charSVG('b','b')}</div><div class="glyph sm">Letters</div></button>
    <button class="card" style="--c:${pal(3)[0]};--cd:${pal(3)[1]}" data-act="menu" data-arg="numbers"><div class="art">${stackSVG(3,{col:5,face:false})}${stackSVG(7,{col:1,face:false})}</div><div class="glyph sm">Numbers</div></button>
    <button class="card" style="--c:${pal(6)[0]};--cd:${pal(6)[1]}" data-act="menu" data-arg="multiply"><div class="art">${stackSVG(3,{col:2,face:false})}<span class="glyph sm">×</span>${stackSVG(4,{col:4,face:false})}</div><div class="glyph sm">Multiply</div></button>
@@ -794,6 +808,7 @@ function screenHome(){
    <button class="card" style="--c:${pal(1)[0]};--cd:${pal(1)[1]}" data-act="menu" data-arg="animals"><div class="art">${svgArt('elephant')}${svgArt('lion')}${svgArt('frog')}</div><div class="glyph sm">Animals</div></button>
    <button class="card" style="--c:${pal(0)[0]};--cd:${pal(0)[1]}" data-act="menu" data-arg="shapes"><div class="art">${shapeSVG('circle','yellow')}${shapeSVG('triangle','green')}${shapeSVG('square','blue')}</div><div class="glyph sm">Shapes</div></button>
    <button class="card" style="--c:${pal(7)[0]};--cd:${pal(7)[1]}" data-act="stickers"><div class="art stkart">${homeStickers()}</div><div class="glyph sm">${stickerCount()} / ${STK_TOTAL}</div></button>
+   <button class="card" style="--c:${pal(2)[0]};--cd:${pal(2)[1]}" data-act="wardrobe"><div class="art">${princessSVG('happy',{head:true})}</div><div class="glyph sm">Gowns</div></button>
    <button class="card" style="--c:${pal(6)[0]};--cd:${pal(6)[1]}" data-act="blocks"><div class="art">${stackSVG(4,{col:2})}</div><div class="glyph sm">${S.unlocked.length} / 46</div></button>
   </div></div>
   <button class="gear" id="gear" aria-label="Grown-ups: press and hold">${ICON.gear}</button>`);
@@ -833,7 +848,14 @@ MENUS.animals={title:'Animals',items:[
 MENUS.shapes={title:'Shapes',items:[
   {id:'sshape',c:3,glyph:'▲ ● ■',gate:null},
   {id:'spattern',c:6,glyph:'● ■ ● ?',gate:'sshape'}]};
-const isOpen=it=>S.unlockAll||!it.gate||A(it.gate).passed>0;
+const isOpen=it=>S.unlockAll||!it.gate||A(it.gate).rounds>0;
+const menuOfAct=id=>Object.keys(MENUS).find(k=>MENUS[k].items.some(i=>i.id===id));
+function recommend(){
+  const open=[];Object.keys(MENUS).forEach(k=>MENUS[k].items.forEach(it=>{if(isOpen(it))open.push(it.id)}));
+  const untried=open.filter(id=>A(id).rounds===0);if(untried.length)return untried[0];
+  const sc=id=>{const a=A(id);const acc=a.asked?a.correct/a.asked:1;return acc*100+Math.min(30,(Date.now()-(a.last||0))/864e5*-2)+((a.last||0)/1e11)};
+  return open.sort((x,y)=>sc(x)-sc(y))[0];
+}
 function screenMenu(which){
   stopSay();const m=MENUS[which];
   render(`<div class="topbar">${ibtn('home',ICON.home,'Home')}<div class="pips"></div></div>
@@ -861,15 +883,23 @@ const SH_PATH={circle:'<circle cx="50" cy="50" r="38"/>',square:'<rect x="14" y=
 const shapeSVG=(s,col)=>{const c=(SH_COL.find(x=>x.n===col)||{c:'#B8C2DA'}).c;return `<svg viewBox="0 0 100 100" class="art" aria-hidden="true"><g fill="${c}" stroke="#1B2A55" stroke-width="3.5" stroke-linejoin="round">${SH_PATH[s]}</g></svg>`};
 
 /* ---------- the princess: original character in a soft 3D-animated-film style (brown hair, gold tiara with flowers, red and gold gown) ---------- */
+const DRESSES=[
+ {n:'Sunset red',need:0,pr:['#F0503C','#C2272B'],py:['#FFD966','#F0A21E'],ps:['#FF7A3C','#F2503A','#FFB02E']},
+ {n:'Sky blue',need:4,pr:['#5FA8FF','#2F63D6'],py:['#E8F4FF','#9CC8F5'],ps:['#7CC4FF','#4F86E8','#BFE4FF']},
+ {n:'Rose pink',need:10,pr:['#FF8FC0','#E04C93'],py:['#FFE3F0','#FFB3D5'],ps:['#FFB0D2','#F0609F','#FFD0E6']},
+ {n:'Forest green',need:18,pr:['#4CC670','#1F8A4A'],py:['#FFF0A6','#F0C23A'],ps:['#7FE08E','#2FA45A','#C9F2A0']},
+ {n:'Royal purple',need:28,pr:['#A878F0','#6A3CC4'],py:['#FFE08A','#F0A21E'],ps:['#C9A2FF','#8450DC','#FFB8F0']},
+ {n:'Mermaid teal',need:40,pr:['#2FD0C8','#128C96'],py:['#D8FFF4','#7AE0CE'],ps:['#7FF0E0','#1FB6B6','#FFB8E0']}];
 function princessSVG(mood,opts={}){
+  const D=DRESSES[S.dress||0]||DRESSES[0];
   const happy=mood==='happy',oops=mood==='oops',up=!!opts.up,head=!!opts.head;
   const defs=`<defs>
    <radialGradient id="pk" cx=".5" cy=".42" r=".65"><stop offset="0" stop-color="#FFE6CF"/><stop offset=".7" stop-color="#F9C9A5"/><stop offset="1" stop-color="#E9A37E"/></radialGradient>
    <linearGradient id="ph" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#9A5E38"/><stop offset=".5" stop-color="#6A3B20"/><stop offset="1" stop-color="#43220F"/></linearGradient>
-   <linearGradient id="pr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0503C"/><stop offset="1" stop-color="#C2272B"/></linearGradient>
-   <linearGradient id="py" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD966"/><stop offset="1" stop-color="#F0A21E"/></linearGradient>
+   <linearGradient id="pr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${D.pr[0]}"/><stop offset="1" stop-color="${D.pr[1]}"/></linearGradient>
+   <linearGradient id="py" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${D.py[0]}"/><stop offset="1" stop-color="${D.py[1]}"/></linearGradient>
    <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0A6"/><stop offset=".5" stop-color="#F7BE2B"/><stop offset="1" stop-color="#C98A12"/></linearGradient>
-   <linearGradient id="ps" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF7A3C"/><stop offset=".5" stop-color="#F2503A"/><stop offset="1" stop-color="#FFB02E"/></linearGradient>
+   <linearGradient id="ps" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${D.ps[0]}"/><stop offset=".5" stop-color="${D.ps[1]}"/><stop offset="1" stop-color="${D.ps[2]}"/></linearGradient>
    <radialGradient id="pi" cx=".5" cy=".35" r=".7"><stop offset="0" stop-color="#9B6234"/><stop offset=".6" stop-color="#4D2A14"/><stop offset="1" stop-color="#2A150A"/></radialGradient>
    <radialGradient id="pb" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FF7C92" stop-opacity=".75"/><stop offset="1" stop-color="#FF7C92" stop-opacity="0"/></radialGradient></defs>`;
   const arm=(x0,y0,x1,y1,hx,hy)=>`<path d="M${x0} ${y0}Q${(x0+x1)/2+(x0<50?-6:6)} ${(y0+y1)/2} ${x1} ${y1}" fill="none" stroke="#E9A37E" stroke-width="8.500" stroke-linecap="round"/><path d="M${x0} ${y0}Q${(x0+x1)/2+(x0<50?-6:6)} ${(y0+y1)/2} ${x1} ${y1}" fill="none" stroke="url(#pk)" stroke-width="6.500" stroke-linecap="round"/><circle cx="${hx}" cy="${hy}" r="4.200" fill="#F9C9A5"/>`;
@@ -1516,29 +1546,33 @@ function finishRound(){
   const next=all.find(k=>!S.unlocked.includes(k));
   if(next)S.unlocked.push(next);
   const stars=f>=7?3:f>=5?2:1,aw=awardStickers(stars,f,leveled);
-  const combo=R.maxCombo||0,speedy=R.speedy||0,bonus=(combo>=6||speedy>=4)?bonusSticker():null;
+  const combo=R.maxCombo||0,speedy=R.speedy||0;let bonus=(combo>=6||speedy>=4)?bonusSticker():null;
+  const before=S.stars||0;S.stars=before+stars;
+  const newDress=DRESSES.findIndex(d=>d.need>before&&d.need<=S.stars);
+  let gift=false;if(todayQ()>=goalN()&&S.giftDay!==dayKey()){S.giftDay=dayKey();gift=true;if(!bonus)bonus=bonusSticker()}
   S.bestCombo=Math.max(S.bestCombo||0,combo);
   save();
-  celebrate({stars,next,leveled,f,id:R.id,aw,bonus,combo,speedy});
+  celebrate({stars,next,leveled,f,id:R.id,aw,bonus,combo,speedy,newDress,gift});
 }
 function nameOf(key){
   const [d,v]=key.split(':');
   return d==='L'?{say:[`Hello! I'm the letter ${LNAME[v.toLowerCase()]}.`,{sound:v},{sound:v}],spoken:`letter ${LNAME[v.toLowerCase()]}`}
     :{say:[`Hello! I'm number ${NUMW[+v]}.`,`I am made of ${NUMW[+v]} ${+v===1?'block':'blocks'}!`],spoken:`number ${NUMW[+v]}`};
 }
-function celebrate({stars,next,leveled,f,id,aw,bonus,combo,speedy}){
+function celebrate({stars,next,leveled,f,id,aw,bonus,combo,speedy,newDress,gift}){
   sfx.win();
   const conf=Array.from({length:44},()=>{const [c]=pal(rnd(8));return `<i style="left:${rnd(100)}%;background:${c};animation-duration:${2+Math.random()*2.5}s;animation-delay:${Math.random()*.8}s"></i>`}).join('');
   const who=next?nameOf(next):null;
   render(`<div class="celebrate"><div class="confetti">${conf}</div>
    <div class="stars">${[0,1,2].map(i=>ICON.star(i<stars)).join('')}</div>
    <div class="row cast"><div class="princess-hero">${princessSVG('happy',{up:true})}</div>${next?`<div class="hero" data-act="hello" data-arg="${next}">${blockFor(next)}</div>`:''}${aw?`<div class="hero2">${stickerHTML(aw.id,{shiny:aw.shiny,big:true})}</div>`:''}${bonus?`<div class="hero2">${stickerHTML(bonus,{shiny:true,big:true})}</div>`:''}</div>
-   <div class="row">${next?'<div class="badge">New block!</div>':'<div class="badge">You have every block!</div>'}${aw?`<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">${aw.shiny?'Shiny sticker!':'New sticker!'}</div>`:''}${leveled?'<div class="badge" style="background:var(--green);color:#fff;box-shadow:0 4px 0 #2E8F34">Level up!</div>':''}${combo>=4?`<div class="badge" style="background:var(--orange);color:#fff;box-shadow:0 4px 0 #C46E10">${combo} in a row!</div>`:''}${speedy>=4?'<div class="badge" style="background:var(--blue);color:#fff;box-shadow:0 4px 0 #21509E">Speedy!</div>':''}${bonus?'<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">Bonus sticker!</div>':''}</div>
+   <div class="row">${next?'<div class="badge">New block!</div>':'<div class="badge">You have every block!</div>'}${aw?`<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">${aw.shiny?'Shiny sticker!':'New sticker!'}</div>`:''}${leveled?'<div class="badge" style="background:var(--green);color:#fff;box-shadow:0 4px 0 #2E8F34">Level up!</div>':''}${combo>=4?`<div class="badge" style="background:var(--orange);color:#fff;box-shadow:0 4px 0 #C46E10">${combo} in a row!</div>`:''}${speedy>=4?'<div class="badge" style="background:var(--blue);color:#fff;box-shadow:0 4px 0 #21509E">Speedy!</div>':''}${bonus?`<div class="badge" style="background:var(--pink);color:#fff;box-shadow:0 4px 0 #C84682">${gift?'Daily gift!':'Bonus sticker!'}</div>`:''}${newDress>0?'<div class="badge" style="background:var(--purple);color:#fff;box-shadow:0 4px 0 #6139B0">New gown!</div>':''}</div>
    ${aw&&aw.medals.length?`<div class="row">${aw.medals.map(m=>stickerHTML(m,{shiny:true})).join('')}<div class="badge" style="background:var(--purple);color:#fff;box-shadow:0 4px 0 #6139B0">Special sticker!</div></div>`:''}
-   <div class="actions">${ibtn('again',ICON.playDark,'Play again',id)}${ibtn('menu-back',ICON.back,'Back')}${ibtn('home',ICON.home,'Home')}${ibtn('blocks',ICON.blocks,'My blocks')}${ibtn('stickers',ICON.book,'Sticker book')}</div></div>`);
+   <div class="actions">${ibtn('again',ICON.playDark,'Play again',id)}${newDress>0?ibtn('wardrobe',princessSVG('happy',{head:true}),'Wardrobe'):''}${ibtn('menu-back',ICON.back,'Back')}${ibtn('home',ICON.home,'Home')}${ibtn('blocks',ICON.blocks,'My blocks')}${ibtn('stickers',ICON.book,'Sticker book')}</div></div>`);
   sayParts([f>=7?'Brilliant!':f>=5?'Well done!':"Nice try! Let's keep practising.",
     ...(aw?['You got a new sticker!',...(aw.shiny?['A shiny one!']:[]),...(aw.medals.length?['A special sticker!']:[])]:[]),
-    ...(bonus?['And a bonus sticker!']:[]),
+    ...(bonus?[gift?'You reached your goal today! Here is a gift.':'And a bonus sticker!']:[]),
+    ...(newDress>0?['The princess has a new gown to wear!']:[]),
     ...(next?[`You unlocked ${who.spoken}!`]:[]),...(leveled?['And the next questions will be trickier!']:[]),...(f>=7?[`You are a star, ${nm()}!`]:[])]);
   R=null;
 }
@@ -1605,6 +1639,12 @@ function screenStickers(keep){
   S.newStickers=[];save();
 }
 
+function screenWardrobe(){
+  stopSay();const st=S.stars||0;
+  const sw=DRESSES.map((d,i)=>{const ok=st>=d.need;return `<button class="swatch ${i===(S.dress||0)?'on':''} ${ok?'':'lock'}" data-act="${ok?'dress':'locked'}" data-arg="${i}" aria-label="${d.n}${ok?'':', locked'}" style="--a:${d.pr[0]};--b:${d.pr[1]};--c:${d.py[0]}"><i></i>${ok?'':`<small>${d.need} stars</small>`}</button>`}).join('');
+  render(`<div class="topbar">${ibtn('home',ICON.home,'Home')}<div class="pips"><div class="bubble">${st} stars collected</div></div></div>
+   <div class="wardrobe"><div class="princess-hero big">${princessSVG('happy',{up:true})}</div><div class="swatches">${sw}</div></div>`);
+}
 function screenBlocks(){
   stopSay();
   const cells=[...AZ.map(x=>'L:'+x),...Array.from({length:20},(_,i)=>'N:'+(i+1))].map(k=>
@@ -1846,6 +1886,8 @@ function settingsHTML(){
   <section><h3>Letter sounds</h3><small>Tap a letter to record it (needs microphone permission; may not work when opened from a link), or choose a short audio file under 250 KB. Letters without a recording use the computer voice. Green means recorded.</small>
    <div class="snd">${AZ.map(L=>`<button class="${recState===L?'rec':S.rec[L.toLowerCase()]?'has':''}" data-act="snd" data-arg="${L}">${L}</button>`).join('')}</div>
    <div><button class="btn ghost" data-act="sndfile">Choose a file for the last letter tapped</button> <button class="btn ghost" data-act="sndclear">Remove all recordings</button></div></section>
+  <section><h3>Voice lines</h3><small>${Object.keys(S.missing||{}).length} lines have been spoken with this device's voice because they are not in clips.json. Copy the list and use <code>recorder/make_clips.py</code> to make clips for them in the same voice as the rest.</small>
+   <div><button class="btn ghost" data-act="copymissing">Copy the list</button></div></section>
   <section><h3>Starting level</h3><small>${S.placed?'The quick game has been played or skipped.':'The quick game has not been played yet.'} It sets each activity's level from a few questions. Playing it again replaces her current levels.</small>
    <div><button class="btn ghost" data-act="quizredo">Play the quick game again</button></div></section>
   <section><h3>Reset</h3>${storageOk?'':'<small>This browser is not saving progress right now.</small>'}<div><button class="btn danger" id="resetBtn" data-act="reset">Reset all progress</button></div></section>`;
@@ -1895,11 +1937,14 @@ app.addEventListener('click',e=>{
    case 'quizskip':S.placed=true;save();screenHome();sayParts(['Hi!','What shall we play?']);break;
    case 'quizredo':screenQuizIntro();break;
    case 'stickers':screenStickers();break;
+   case 'wardrobe':screenWardrobe();sayParts(['Pick a gown for me!']);break;
+   case 'dress':S.dress=+arg;save();sfx.win();screenWardrobe();sayParts([pick(['How lovely!','I love it!','Wonderful!'])]);break;
    case 'spage':spage=+arg;screenStickers(true);break;
    case 'stk':{sfx.pop();t.animate&&t.animate([{transform:'scale(1)'},{transform:'scale(1.18) rotate(6deg)'},{transform:'scale(1)'}],{duration:420});break}
    case 'breakend':endBreak();sayParts(['Hi!','What shall we play?']);break;
    case 'breaknow':screenBreak();break;
    case 'ptab':pTab=arg;screenParent();break;
+   case 'copymissing':{const txt=Object.keys(S.missing||{}).join('\n');try{navigator.clipboard.writeText(txt).then(()=>screenParent('Copied the voice line list.'),()=>screenParent('Could not copy. Open the console and run Object.keys(S.missing).'))}catch(e){screenParent('Could not copy.')}break}
    case 'copy':{const txt=summaryText(),fail=()=>screenParent('Copy this text by hand:');try{navigator.clipboard.writeText(txt).then(()=>screenParent('Copied. You can paste it into a message.'),fail)}catch(e){fail()}break}
    case 'music':S.music=!S.music;save();if(S.music)startMusic();else stopMusic();screenHome();break;
    case 'menu':screenMenu(arg);sayParts([MENU_LINE[arg]||'']);break;
@@ -1907,6 +1952,7 @@ app.addEventListener('click',e=>{
    case 'blocks':screenBlocks();break;
    case 'locked':t.style.animation='shake .4s';setTimeout(()=>t.style.animation='',420);sayParts(['Finish the one before first!']);break;
    case 'play':menuOf=t.dataset.menu||menuOf;startRound(arg);break;
+   case 'pick':menuOf=menuOfAct(arg)||menuOf;startRound(arg);break;
    case 'again':startRound(arg);break;
    case 'leave':{const wasQuiz=R&&R.quiz;R=null;if(wasQuiz)screenHome();else screenMenu(menuOf);break}
    case 'replay':if(R&&R.cur)sayParts(R.cur.say);break;
