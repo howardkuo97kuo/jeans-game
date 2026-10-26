@@ -161,7 +161,7 @@ svg.blk{width:clamp(90px,24vmin,230px);height:auto}
 .home .card .glyph.sm{font-size:clamp(26px,5.6vmin,64px);white-space:nowrap}
 .hellorow{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .hello{font-size:clamp(30px,9vmin,76px);font-weight:700;text-align:center}
-.cards{flex:1;min-height:0;display:grid;gap:clamp(12px,2.4vmin,20px);grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));align-content:safe center;overflow-y:auto;padding-bottom:76px}
+.cards{flex:1;min-height:0;display:grid;gap:clamp(12px,2.4vmin,20px);grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));align-content:safe center;overflow-y:auto;padding-bottom:12px}
 .card{position:relative;border-radius:30px;background:var(--c);box-shadow:0 10px 0 var(--cd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 10px;min-height:clamp(140px,28vmin,340px);color:#fff;font-family:var(--f-display);font-weight:700;transition:transform .12s}
 .card:active{transform:translateY(6px);box-shadow:0 4px 0 var(--cd)}
 .card .art{display:flex;align-items:flex-end;justify-content:center;gap:8px;min-height:clamp(60px,15vmin,160px)}
@@ -348,6 +348,24 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .swatch small{position:absolute;bottom:-8px;background:var(--ink);color:#fff;border-radius:10px;padding:1px 8px;font:700 12px var(--f-display)}
 .princess-hero.big .princess{width:100%}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* question prompt, pulsing replay, star pips, goal ring text, lock hints, home bottom strip, menu bubble */
+.qprompt{text-align:center;font:700 clamp(22px,5.4vmin,44px) var(--f-display);color:var(--ink);background:#fff;border-radius:22px;padding:8px 18px;box-shadow:0 5px 0 var(--sky2);margin:26px auto 0;max-width:100%}
+.qprompt b{color:var(--purple);font-size:1.5em}
+.topbar [data-act=replay]{width:clamp(60px,11vmin,100px);height:clamp(60px,11vmin,100px)}
+.round.pulse{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.16);box-shadow:0 0 0 8px #FFC92866,0 5px 0 var(--sky2)}}
+.pip.ok::after,.pip.assist::after{content:'★';display:grid;place-items:center;height:100%;font-size:.8em;line-height:1;color:#fff}
+.pip{width:clamp(14px,3.2vmin,24px);height:clamp(14px,3.2vmin,24px);font-size:clamp(11px,2.4vmin,18px)}
+.goal b{font-size:clamp(11px,2.4vmin,16px);letter-spacing:-.5px}
+.card .lockhint{position:absolute;left:8px;right:8px;bottom:8px;background:#fff;color:var(--ink);border-radius:14px;padding:6px 8px;font:700 clamp(12px,2.6vmin,17px) var(--f-body);animation:stageIn .3s ease-out}
+.mystuff{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 76px 6px 0}
+.mystuff .card{min-height:clamp(86px,15vmin,150px);padding:8px 4px;gap:4px;border-radius:22px;box-shadow:0 6px 0 var(--cd)}
+.mystuff .card .art{transform:scale(.72);margin:-8px 0}
+.mystuff .card .glyph.sm{font-size:clamp(16px,3.6vmin,28px)}
+.mbubble{display:flex;align-items:center;gap:10px;background:#fff;border-radius:22px;padding:8px 14px;box-shadow:0 5px 0 var(--sky2);font:700 clamp(18px,4vmin,30px) var(--f-display);color:var(--ink)}
+.mbubble .hphead{width:48px;height:48px;flex:none}
+.mbubble .hphead svg,.mbubble .hphead img{width:100%;height:100%}
 </style>
 
 <div id="app"></div>
@@ -866,7 +884,7 @@ function homeStickers(){
 const goalN=()=>S.goal||20,todayQ=()=>((S.days||{})[dayKey()]||{}).q||0;
 function goalRing(){
   const n=goalN(),q=Math.min(todayQ(),n),C=2*Math.PI*20,done=todayQ()>=n;
-  return `<div class="goal" title="Today: ${todayQ()} of ${n}" aria-label="Today's goal: ${todayQ()} of ${n} questions"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#fff" stroke="#BFE0FF" stroke-width="6"/><circle cx="24" cy="24" r="20" fill="none" stroke="${done?'#FFC928':'#4CC152'}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C*q/n} ${C}" transform="rotate(-90 24 24)"/></svg><b>${done?ICON.star(true):todayQ()}</b></div>`;
+  return `<div class="goal" title="Today: ${todayQ()} of ${n}" aria-label="Today's goal: ${todayQ()} of ${n} questions"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#fff" stroke="#BFE0FF" stroke-width="6"/><circle cx="24" cy="24" r="20" fill="none" stroke="${done?'#FFC928':'#4CC152'}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C*q/n} ${C}" transform="rotate(-90 24 24)"/></svg><b>${done?ICON.star(true):todayQ()+'/'+n}</b></div>`;
 }
 function screenHome(){
   stopSay();
@@ -879,6 +897,8 @@ function screenHome(){
    <button class="card" style="--c:${pal(4)[0]};--cd:${pal(4)[1]}" data-act="menu" data-arg="time"><div class="art">${clockSVG(3,0)}${clockSVG(6,30)}</div><div class="glyph sm">Time</div></button>
    <button class="card" style="--c:${pal(1)[0]};--cd:${pal(1)[1]}" data-act="menu" data-arg="animals"><div class="art">${svgArt('elephant')}${svgArt('lion')}${svgArt('frog')}</div><div class="glyph sm">Animals</div></button>
    <button class="card" style="--c:${pal(0)[0]};--cd:${pal(0)[1]}" data-act="menu" data-arg="shapes"><div class="art">${shapeSVG('circle','yellow')}${shapeSVG('triangle','green')}${shapeSVG('square','blue')}</div><div class="glyph sm">Shapes</div></button>
+  </div>
+  <div class="mystuff">
    <button class="card" style="--c:${pal(7)[0]};--cd:${pal(7)[1]}" data-act="stickers"><div class="art stkart">${homeStickers()}</div><div class="glyph sm">${stickerCount()} / ${STK_TOTAL}</div></button>
    <button class="card" style="--c:${pal(2)[0]};--cd:${pal(2)[1]}" data-act="wardrobe"><div class="art">${princessSVG('happy',{head:true})}</div><div class="glyph sm">Gowns</div></button>
    <button class="card" style="--c:${pal(6)[0]};--cd:${pal(6)[1]}" data-act="blocks"><div class="art">${charSVG('c','c')}${digitSVG(4)}</div><div class="glyph sm">${S.unlocked.length} / 46</div></button>
@@ -931,9 +951,9 @@ function recommend(){
 function screenMenu(which){
   stopSay();const m=MENUS[which];
   render(`<div class="topbar">${ibtn('home',ICON.home,'Home')}<div class="pips"></div></div>
-  <div class="menu"><div class="cards">${m.items.map(it=>{
+  <div class="menu"><div class="mbubble"><span class="hphead">${princessSVG('happy',{head:true})}</span>${esc(MENU_LINE[which]||'')}</div><div class="cards">${m.items.map(it=>{
     const open=isOpen(it),a=A(it.id),[c,cd]=pal(it.c);
-    return `<button class="card ${open?'':'locked'}" style="--c:${c};--cd:${cd}" data-act="${open?'play':'locked'}" data-arg="${it.id}" data-menu="${which}">
+    return `<button class="card ${open?'':'locked'}" style="--c:${c};--cd:${cd}" data-act="${open?'play':'locked'}" data-arg="${it.id}" data-menu="${which}" data-gate="${it.gate?esc(ACT_NAME[it.gate]):''}">
       ${open?'':ICON.lock}<div class="glyph ${it.glyph.length>3?'xs':''}">${esc(it.glyph)}</div><div class="cname">${esc(ACT_NAME[it.id])}</div>
       <div class="lvl">${[0,1,2].map(i=>`<i class="${a.level>i||(a.level===2&&a.passed>0)?'f':''}"></i>`).join('')}</div></button>`}).join('')}
   </div></div>`);
@@ -1539,9 +1559,13 @@ function renderQ(){
     ch=q.choices.map((c,i)=>{const [bg,bd]=c.bg||pal(R.paletteShift+i);return `<button class="tile ${c.emoji?'emoji':''} ${c.word?'word':''} ${c.grp?'grp':''}" data-act="ans" data-i="${i}" style="--c:${bg};--cd:${bd}">${c.html}</button>`}).join('');
   }
   const slots=q.kind==='build'?`<div class="slots" id="slots">${q.word.split('').map(()=>'<div class="slot"></div>').join('')}</div>`:'';
+  const lname=Object.fromEntries(Object.entries(LNAME).map(([k,v])=>[v,k.toUpperCase()])),sy=(q.say||[]).filter(x=>typeof x==='string'||(x&&x.sound));
+  const ptxt=sy.map((x,i)=>typeof x!=='string'?`<b>${esc(x.sound.toUpperCase())}</b>`:/letter$/i.test(sy[i-1]||'')&&lname[x.toLowerCase()]?`<b>${lname[x.toLowerCase()]}</b>`:esc(x)).join(' ').trim();
   render(`<div class="topbar">${ibtn('leave',ICON.back,'Back')}<div class="pips">${pips}</div><div class="buddy" id="buddy">${princessSVG('n',{head:true})}</div>${ibtn('replay',ICON.speaker,'Hear again')}</div>
+  ${ptxt&&q.kind!=='build'?`<div class="qprompt">${ptxt}</div>`:''}
   <div class="stage">${q.stage}${slots}</div><div class="choices" id="choices">${ch}</div>`);
   setTimeout(()=>{if(R&&R.cur===q)sayParts(q.say)},300);
+  setTimeout(()=>{const r=document.querySelector('[data-act="replay"]');if(R&&R.cur===q&&!R.lock&&r)r.classList.add('pulse')},6000);
   startTimer(q);
   if(R.toast){const t=R.toast;R.toast=null;showToast(t)}
   if(q.kind==='trace')initTrace(q);
@@ -2012,7 +2036,7 @@ app.addEventListener('click',e=>{
    case 'menu':screenMenu(arg);sayParts([MENU_LINE[arg]||'']);break;
    case 'menu-back':screenMenu(menuOf);break;
    case 'blocks':screenBlocks();break;
-   case 'locked':t.style.animation='shake .4s';setTimeout(()=>t.style.animation='',420);sayParts(['Finish the one before first!']);break;
+   case 'locked':{t.style.animation='shake .4s';setTimeout(()=>t.style.animation='',420);const g=t.dataset.gate;if(g&&!t.querySelector('.lockhint')){t.insertAdjacentHTML('beforeend',`<div class="lockhint">Play “${g}” first</div>`);setTimeout(()=>{const h=t.querySelector('.lockhint');if(h)h.remove()},3000)}sayParts(['Finish the one before first!']);break}
    case 'play':menuOf=t.dataset.menu||menuOf;startRound(arg);break;
    case 'pick':menuOf=menuOfAct(arg)||menuOf;startRound(arg);break;
    case 'again':startRound(arg);break;
