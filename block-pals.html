@@ -320,6 +320,19 @@ svg.art{display:block;width:100%;height:100%;overflow:visible}
 .buddy svg.phead{overflow:visible}
 @keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg) translateY(-6px)}}
 .bchar svg.princess{width:clamp(110px,26vmin,240px)}
+.princess.phead{overflow:hidden}
+.pblink{transform-box:fill-box;transform-origin:50% 50%;animation:blink 4.6s infinite}
+.pglint{animation:twinkle 2.4s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:1}}
+.mg{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-50%);clip-path:polygon(50% 0,62% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 36%);animation:mgfly .75s ease-out forwards}
+@keyframes mgfly{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2) rotate(200deg);opacity:0}}
+.pbubble{position:absolute;right:calc(100% + 6px);top:50%;transform:translateY(-50%);white-space:nowrap;background:#fff;color:var(--ink);font:700 clamp(14px,3vmin,22px) var(--f-display);padding:6px 14px;border-radius:18px;box-shadow:0 4px 0 var(--sky2);animation:bubbleIn 2.4s ease both;pointer-events:none}
+.pbubble::after{content:"";position:absolute;left:100%;top:50%;margin-top:-7px;border:7px solid transparent;border-left-color:#fff}
+@keyframes bubbleIn{0%{opacity:0;transform:translateY(-50%) scale(.6)}10%{opacity:1;transform:translateY(-50%) scale(1.05)}18%{transform:translateY(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}
+.princess-hero{position:relative}
+.princess-hero::before,.princess-hero::after{content:"";position:absolute;width:16%;aspect-ratio:1;background:#FFD45C;clip-path:polygon(50% 0,62% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 36%);animation:twinkle 1.8s ease-in-out infinite}
+.princess-hero::before{left:-6%;top:12%}.princess-hero::after{right:-4%;top:30%;animation-delay:.9s;background:#FF8FB5}
+.hphead{animation:bob 3s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
@@ -464,14 +477,14 @@ const A=id=>S.act[id]||(S.act[id]={level:0,rounds:0,passed:0,correct:0,asked:0,w
 /* ---------- sound ---------- */
 let ac;
 function tone(f,d,t='sine',when=0,vol=.15){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+when;o.type=t;o.frequency.value=f;g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(vol,n+.02);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g).connect(ac.destination);o.start(n);o.stop(n+d+.05)}catch(e){}}
-const sfx={ok(){tone(660,.15,'triangle');tone(880,.25,'triangle',.12)},no(){tone(260,.22,'sine',0,.09)},pop(){tone(520,.09,'square',0,.05)},win(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,'triangle',i*.13))}};
+const sfx={ok(){tone(660,.15,'triangle');tone(880,.25,'triangle',.12);tone(1320,.14,'sine',.26,.05);tone(1760,.2,'sine',.34,.04)},no(){tone(260,.22,'sine',0,.09)},pop(){tone(520,.09,'square',0,.05)},win(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,'triangle',i*.13))}};
 
 let voice=null;
 function pickVoice(){
   if(!('speechSynthesis' in window))return null;
   const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
   if(S.voice){const f=vs.find(v=>v.voiceURI===S.voice);if(f)return voice=f}
-  for(const p of ['Samantha','Aria','Jenny','Google US English','Zira','Karen','Google UK English Female']){const f=vs.find(v=>v.name.includes(p));if(f)return voice=f}
+  for(const p of ['Samantha','Ava','Allison','Serena','Aria','Jenny','Ana','Google UK English Female','Google US English','Zira','Karen','Moira','Tessa','Fiona']){const f=vs.find(v=>v.name.includes(p));if(f)return voice=f}
   return voice=vs.find(v=>/en-US/i.test(v.lang))||vs[0]||null;
 }
 if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=()=>{voice=null;pickVoice()};
@@ -524,7 +537,7 @@ function ttsSpeak(text){return new Promise(res=>{
   if(!('speechSynthesis' in window)){res();return}
   const u=new SpeechSynthesisUtterance(text);
   if(voice||pickVoice()){u.voice=voice;u.lang=voice.lang}else u.lang='en-US';
-  u.rate=S.rate;u.pitch=1.1;
+  u.rate=S.rate*.95;u.pitch=1.22;u.volume=.95;
   let done=false,t;const fin=()=>{if(!done){done=true;clearTimeout(t);res()}};
   u.onend=fin;u.onerror=fin;t=setTimeout(fin,2000+text.length*130);
   try{speechSynthesis.speak(u)}catch(e){fin()}
@@ -543,7 +556,22 @@ async function sayParts(parts){
   }
   if(my===sayTok)duck(false);
 }
-const praise=()=>pick(['Great job!','Yes! Well done!','You got it!','Super!','Brilliant!','Fantastic!']);
+const praise=()=>pick(['Great job!','Yes! Well done!','You got it!','Wonderful!','How lovely!','You are a star!','Magical!','Splendid, my friend!','Great job!','Yes! Well done!','You got it!']);
+const oopsLine=()=>pick(['Try again!','Nearly! Have another go.','Oops, try another one.','That is okay, try once more!','Take your time, you can do it!']);
+/* the princess speech bubble next to her portrait */
+function bubble(text){
+  const b=document.querySelector('.buddy');if(!b)return;
+  const old=document.querySelector('.pbubble');if(old)old.remove();
+  const el=document.createElement('div');el.className='pbubble';el.textContent=text;b.appendChild(el);setTimeout(()=>el.remove(),2400);
+}
+function magicBurst(x,y,n=7){
+  for(let i=0;i<n;i++){
+    const s=document.createElement('i');s.className='mg';const a=Math.random()*6.28,d=24+Math.random()*44;
+    s.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d-14}px;background:${pick(['#FFD45C','#FF8FB5','#fff','#C9A8FF'])};width:${8+rnd(9)}px;height:${8+rnd(9)}px`;
+    document.body.appendChild(s);setTimeout(()=>s.remove(),800);
+  }
+}
+document.addEventListener('pointerdown',e=>{if(!document.querySelector('.tcv'))magicBurst(e.clientX,e.clientY,5)},true);
 
 /* ---------- background music: an original upbeat loop (drums, bouncy bass, marimba tune) played with the Web Audio API, no files ---------- */
 let mGain=null,mTimer=null,mStep=0,mNext=0,mDuck=false,mNoiseBuf=null;
@@ -771,6 +799,7 @@ function screenHome(){
   <button class="gear" id="gear" aria-label="Grown-ups: press and hold">${ICON.gear}</button>`);
 }
 
+const MENU_LINE={letters:"Let's visit the letter garden!",numbers:"Let's count in the castle!",multiply:"Let's do some magic multiplying!",time:"Let's see what time it is!",animals:"Let's meet the animals!",shapes:"Let's find shapes and colours!"};
 const MENUS={
  letters:{title:'Letters',items:[
   {id:'lfind',c:5,glyph:'Aa',gate:null},
@@ -831,32 +860,63 @@ const SH_SHAPES=[{n:'circle'},{n:'square'},{n:'triangle'},{n:'star'},{n:'heart'}
 const SH_PATH={circle:'<circle cx="50" cy="50" r="38"/>',square:'<rect x="14" y="14" width="72" height="72" rx="6"/>',triangle:'<path d="M50 10L92 86H8Z"/>',star:'<path d="M50 6L62 36L94 38L69 58L77 90L50 72L23 90L31 58L6 38L38 36Z"/>',heart:'<path d="M50 88C10 58 6 32 22 20Q38 10 50 30Q62 10 78 20Q94 32 90 58Q80 74 50 88Z"/>',rectangle:'<rect x="6" y="26" width="88" height="48" rx="6"/>',oval:'<ellipse cx="50" cy="50" rx="44" ry="28"/>',diamond:'<path d="M50 6L90 50L50 94L10 50Z"/>'};
 const shapeSVG=(s,col)=>{const c=(SH_COL.find(x=>x.n===col)||{c:'#B8C2DA'}).c;return `<svg viewBox="0 0 100 100" class="art" aria-hidden="true"><g fill="${c}" stroke="#1B2A55" stroke-width="3.5" stroke-linejoin="round">${SH_PATH[s]}</g></svg>`};
 
-/* ---------- the princess: original character, brown hair, gold tiara, red and gold gown ---------- */
+/* ---------- the princess: original character in a soft 3D-animated-film style (brown hair, gold tiara with flowers, red and gold gown) ---------- */
 function princessSVG(mood,opts={}){
   const happy=mood==='happy',oops=mood==='oops',up=!!opts.up,head=!!opts.head;
-  const sk='#FFD9B8',hair='#6B3E26',I='#1B2A55';
-  const arms=up?`<path d="M31 68Q15 56 17 38M69 68Q85 56 83 38" fill="none" stroke="${I}" stroke-width="9" stroke-linecap="round"/><path d="M31 68Q15 56 17 38M69 68Q85 56 83 38" fill="none" stroke="${sk}" stroke-width="5.500" stroke-linecap="round"/><circle cx="17" cy="37" r="5" fill="${sk}" stroke="${I}" stroke-width="2"/><circle cx="83" cy="37" r="5" fill="${sk}" stroke="${I}" stroke-width="2"/>`
-    :`<path d="M30 70Q20 84 30 94M70 70Q80 84 70 94" fill="none" stroke="${I}" stroke-width="9" stroke-linecap="round"/><path d="M30 70Q20 84 30 94M70 70Q80 84 70 94" fill="none" stroke="${sk}" stroke-width="5.500" stroke-linecap="round"/>`;
-  const eyes=oops?`<path d="M36 33L46 36M64 33L54 36" stroke="${I}" stroke-width="2.200" stroke-linecap="round"/>`:'';
-  const mouth=happy?`<path d="M42 47Q50 58 58 47Z" fill="#B83A30" stroke="${I}" stroke-width="1.800" stroke-linejoin="round"/><path d="M45 51Q50 54 55 51" fill="#FF8FA0" stroke="none"/>`:oops?`<ellipse cx="50" cy="51" rx="3.500" ry="2.500" fill="#B83A30" stroke="${I}" stroke-width="1.500"/>`:`<path d="M43 48Q50 54 57 48" fill="none" stroke="${I}" stroke-width="2.200" stroke-linecap="round"/>`;
-  const body=head?'':`<defs><linearGradient id="pgs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2564B"/><stop offset=".55" stop-color="#FF9A2E"/><stop offset="1" stop-color="#FFC928"/></linearGradient></defs>
-    <path d="M26 34Q14 72 20 102Q30 112 40 98L42 60H58L60 98Q70 112 80 102Q86 72 74 34Z" fill="${hair}" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/>
-    <path d="M36 76Q8 98 3 126H97Q92 98 64 76Z" fill="url(#pgs)" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/>
-    <path d="M10 112Q50 126 90 112" fill="none" stroke="#FFE08A" stroke-width="3"/><path d="M26 98Q50 108 74 98" fill="none" stroke="#FFE08A" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round"/>
+  const defs=`<defs>
+   <radialGradient id="pk" cx=".5" cy=".42" r=".65"><stop offset="0" stop-color="#FFE6CF"/><stop offset=".7" stop-color="#F9C9A5"/><stop offset="1" stop-color="#E9A37E"/></radialGradient>
+   <linearGradient id="ph" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#9A5E38"/><stop offset=".5" stop-color="#6A3B20"/><stop offset="1" stop-color="#43220F"/></linearGradient>
+   <linearGradient id="pr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0503C"/><stop offset="1" stop-color="#C2272B"/></linearGradient>
+   <linearGradient id="py" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD966"/><stop offset="1" stop-color="#F0A21E"/></linearGradient>
+   <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0A6"/><stop offset=".5" stop-color="#F7BE2B"/><stop offset="1" stop-color="#C98A12"/></linearGradient>
+   <linearGradient id="ps" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF7A3C"/><stop offset=".5" stop-color="#F2503A"/><stop offset="1" stop-color="#FFB02E"/></linearGradient>
+   <radialGradient id="pi" cx=".5" cy=".35" r=".7"><stop offset="0" stop-color="#9B6234"/><stop offset=".6" stop-color="#4D2A14"/><stop offset="1" stop-color="#2A150A"/></radialGradient>
+   <radialGradient id="pb" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FF7C92" stop-opacity=".75"/><stop offset="1" stop-color="#FF7C92" stop-opacity="0"/></radialGradient></defs>`;
+  const arm=(x0,y0,x1,y1,hx,hy)=>`<path d="M${x0} ${y0}Q${(x0+x1)/2+(x0<50?-6:6)} ${(y0+y1)/2} ${x1} ${y1}" fill="none" stroke="#E9A37E" stroke-width="8.500" stroke-linecap="round"/><path d="M${x0} ${y0}Q${(x0+x1)/2+(x0<50?-6:6)} ${(y0+y1)/2} ${x1} ${y1}" fill="none" stroke="url(#pk)" stroke-width="6.500" stroke-linecap="round"/><circle cx="${hx}" cy="${hy}" r="4.200" fill="#F9C9A5"/>`;
+  const arms=up?arm(28,76,12,56,11,52)+arm(72,76,88,56,89,52):arm(27,78,17,98,17,101)+arm(73,78,83,98,83,101);
+  const brow=oops?`<path d="M35 31Q40 29 46 32M65 31Q60 29 54 32" fill="none" stroke="#5A3018" stroke-width="1.600" stroke-linecap="round"/>`:`<path d="M35 32Q40 28.500 46 31M65 32Q60 28.500 54 31" fill="none" stroke="#5A3018" stroke-width="1.600" stroke-linecap="round"/>`;
+  const mouth=happy?`<path d="M41 52.500Q50 63 59 52.500Q50 55 41 52.500Z" fill="#A02A2E"/><path d="M42.500 53Q50 56 57.500 53Q50 54.800 42.500 53Z" fill="#fff"/><path d="M45 58.500Q50 57 55 58.500Q50 61.500 45 58.500Z" fill="#F0707E"/>`
+    :oops?`<ellipse cx="50" cy="55.500" rx="3.200" ry="2.600" fill="#A02A2E"/>`
+    :`<path d="M43 53Q50 59.500 57 53Q50 56 43 53Z" fill="#B83A40"/><path d="M43 53Q50 56 57 53" fill="none" stroke="#A02A2E" stroke-width="1" stroke-linecap="round"/>`;
+  const eye=(cx)=>`<g class="pblink"><ellipse cx="${cx}" cy="41" rx="6.200" ry="7" fill="#fff"/><ellipse cx="${cx}" cy="41.500" rx="5" ry="6" fill="url(#pi)"/><ellipse cx="${cx}" cy="42" rx="2.400" ry="3" fill="#1A0C05"/><circle cx="${cx-1.8}" cy="38.800" r="2" fill="#fff"/><circle cx="${cx+1.800}" cy="44" r=".9" fill="#fff" opacity=".85"/><path d="M${cx-6.800} 38.500Q${cx} 31.500 ${cx+6.800} 38.500" fill="none" stroke="#2A150A" stroke-width="2.200" stroke-linecap="round"/><path d="M${cx+(cx<50?-6.800:6.800)} 38.500l${cx<50?-1.800:1.800} -1.800" stroke="#2A150A" stroke-width="1.400" stroke-linecap="round"/></g>`;
+  const body=head?'':`<path d="M24 30Q6 58 14 92Q18 106 8 118Q26 114 34 98L38 66L62 66L66 98Q74 114 92 118Q82 106 86 92Q94 58 76 30Z" fill="url(#ph)"/>
+    <path d="M18 86Q22 100 14 112M82 86Q78 100 86 112M30 80Q28 96 22 106" fill="none" stroke="#B8794A" stroke-width="1.200" stroke-linecap="round" opacity=".6"/>
     ${arms}
-    <path d="M35 60H65L68 82Q50 90 32 82Z" fill="#E8412F" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/><path d="M50 62V84" stroke="#FFE08A" stroke-width="3"/><path d="M33 80Q50 88 67 80" fill="none" stroke="#FFC928" stroke-width="4"/>
-    <circle cx="29" cy="64" r="8.500" fill="#FF9A2E" stroke="${I}" stroke-width="2.200"/><circle cx="71" cy="64" r="8.500" fill="#FF9A2E" stroke="${I}" stroke-width="2.200"/>
-    <rect x="45" y="52" width="10" height="12" fill="${sk}"/><path d="M40 62Q50 70 60 62" fill="none" stroke="#FFC928" stroke-width="2.500" stroke-linecap="round"/><circle cx="50" cy="68" r="2.500" fill="#F2564B"/>`;
-  const face=`<path d="M26 34Q14 54 20 70Q28 74 36 62L38 40H62L64 62Q72 74 80 70Q86 54 74 34Z" fill="${hair}" stroke="none"/>
-    <circle cx="50" cy="38" r="21" fill="${sk}" stroke="${I}" stroke-width="2.500"/>
-    <path d="M29 38Q30 14 50 14Q70 14 71 38Q62 24 50 26Q38 24 29 38Z" fill="${hair}" stroke="${I}" stroke-width="2.500" stroke-linejoin="round"/>
-    <path d="M70 26Q80 24 80 32Q76 36 72 34Z" fill="#FF7DB0" stroke="${I}" stroke-width="1.500"/><circle cx="75" cy="29" r="2.500" fill="#FFC928"/>
-    <path d="M35 19L36 8L43 14L50 4L57 14L64 8L65 19Z" fill="#FFC928" stroke="${I}" stroke-width="2.200" stroke-linejoin="round"/><circle cx="50" cy="12" r="3" fill="#F2564B" stroke="${I}" stroke-width="1.200"/>
-    <ellipse cx="42" cy="40" rx="4.800" ry="5.800" fill="#fff" stroke="${I}" stroke-width="1.500"/><ellipse cx="58" cy="40" rx="4.800" ry="5.800" fill="#fff" stroke="${I}" stroke-width="1.500"/>
-    <circle cx="42.500" cy="41" r="3.300" fill="#3B2314"/><circle cx="58.500" cy="41" r="3.300" fill="#3B2314"/><circle cx="43.800" cy="39.300" r="1.200" fill="#fff"/><circle cx="59.800" cy="39.300" r="1.200" fill="#fff"/>
-    ${eyes}<circle cx="35" cy="47" r="3.600" fill="#FF9AA8" opacity=".6"/><circle cx="65" cy="47" r="3.600" fill="#FF9AA8" opacity=".6"/>
-    ${mouth}<circle cx="30" cy="46" r="2" fill="#F2564B" stroke="${I}" stroke-width="1"/><circle cx="70" cy="46" r="2" fill="#F2564B" stroke="${I}" stroke-width="1"/>`;
-  return `<svg viewBox="${head?'12 0 76 62':'0 0 100 130'}" class="princess ${head?'phead':''}" aria-hidden="true">${body}${face}</svg>`;
+    <path d="M33 90Q4 110 -1 128H101Q96 110 67 90Q50 99 33 90Z" fill="url(#pr)"/>
+    <path d="M50 99Q42 112 35 128H65Q58 112 50 99Z" fill="url(#py)"/>
+    <path d="M50 99Q42 112 35 128M50 99Q58 112 65 128" fill="none" stroke="url(#pg)" stroke-width="1.800" stroke-linecap="round"/>
+    <path d="M6 122Q50 132 94 122" fill="none" stroke="url(#pg)" stroke-width="2.600" stroke-linecap="round"/>
+    <path d="M14 112Q20 108 24 114Q20 120 14 112ZM76 114Q80 108 86 112Q82 120 76 114Z" fill="none" stroke="#FFD45C" stroke-width="1.100"/>
+    <g fill="#FFE27A"><circle cx="20" cy="104" r="1.200"/><circle cx="30" cy="116" r="1"/><circle cx="12" cy="122" r="1"/><circle cx="80" cy="104" r="1.200"/><circle cx="70" cy="116" r="1"/><circle cx="88" cy="122" r="1"/><circle cx="50" cy="118" r="1.100"/></g>
+    <path d="M33 66H67L69 88Q50 100 31 88Z" fill="url(#pr)"/>
+    <path d="M36 70Q50 82 64 70L66 86Q50 97 34 86Z" fill="url(#py)" opacity=".92"/>
+    <path d="M35 67Q50 79 65 67" fill="none" stroke="url(#pg)" stroke-width="2.800" stroke-linecap="round"/>
+    <path d="M50 78V92M42 76Q44 86 40 90M58 76Q56 86 60 90" fill="none" stroke="#E8A21E" stroke-width="1"/>
+    <path d="M50 77L53 81L50 85L47 81Z" fill="#E22E4A" stroke="url(#pg)" stroke-width="1.200"/>
+    <path d="M32 89Q50 100 68 89" fill="none" stroke="url(#pg)" stroke-width="2.600"/>
+    <ellipse cx="25" cy="72" rx="10.500" ry="9.500" fill="url(#ps)"/><ellipse cx="75" cy="72" rx="10.500" ry="9.500" fill="url(#ps)"/>
+    <path d="M18 68Q22 76 20 80M32 68Q28 76 30 80M68 68Q72 76 70 80M82 68Q78 76 80 80" fill="none" stroke="#C2272B" stroke-width="1.400" opacity=".7"/>
+    <path d="M15 79Q25 83 35 79M65 79Q75 83 85 79" fill="none" stroke="url(#pg)" stroke-width="2.600" stroke-linecap="round"/>
+    <path d="M44 56H56V68Q50 72 44 68Z" fill="#F2B28C"/>
+    <path d="M38 65Q50 77 62 65" fill="none" stroke="#FFC93C" stroke-width="1.600" stroke-linecap="round" stroke-dasharray="2.200 1.400"/><path d="M41 64Q50 74 59 64" fill="none" stroke="#E8333F" stroke-width="1.500" stroke-linecap="round" stroke-dasharray="1.500 1.500"/><circle cx="50" cy="73" r="2.200" fill="#E22E4A" stroke="url(#pg)" stroke-width=".9"/>`;
+  const face=`<path d="M25 34Q8 58 18 86Q26 78 32 62L36 40Z" fill="url(#ph)"/><path d="M75 34Q92 58 82 86Q74 78 68 62L64 40Z" fill="url(#ph)"/>
+    <path d="M29 36Q27 15 50 14Q73 15 71 36Q71 54 62 60Q50 68 38 60Q29 54 29 36Z" fill="url(#pk)"/>
+    <ellipse cx="35.500" cy="50" rx="6" ry="5" fill="url(#pb)"/><ellipse cx="64.500" cy="50" rx="6" ry="5" fill="url(#pb)"/>
+    <path d="M26 44Q22 18 50 9Q78 18 74 44Q71 26 61 21Q55 28 50 27Q45 28 39 21Q29 26 26 44Z" fill="url(#ph)"/>
+    <path d="M50 12Q45 20 38 22M50 12Q56 18 62 21" fill="none" stroke="#B8794A" stroke-width="1.100" opacity=".7" stroke-linecap="round"/>
+    <path d="M28 46Q25 56 30 64Q27 54 32 44Z" fill="url(#ph)"/><path d="M72 46Q75 56 70 64Q73 54 68 44Z" fill="url(#ph)"/>
+    ${brow}${eye(41)}${eye(59)}
+    <path d="M48.500 47.500Q50 49.500 52 47.800" fill="none" stroke="#D88F6A" stroke-width="1.200" stroke-linecap="round"/>
+    ${mouth}
+    <path d="M30 51Q27 55 29.500 58" fill="none" stroke="#C9704E" stroke-width=".01"/>
+    <circle cx="29" cy="52" r="1.700" fill="#fff4cc"/><path d="M29 53.500v3.500" stroke="#E8333F" stroke-width="2.200" stroke-linecap="round"/>
+    <circle cx="71" cy="52" r="1.700" fill="#fff4cc"/><path d="M71 53.500v3.500" stroke="#E8333F" stroke-width="2.200" stroke-linecap="round"/>
+    <path d="M32 21L36 12L41 17L45 8L50 3L55 8L59 17L64 12L68 21Q50 14 32 21Z" fill="url(#pg)"/><path d="M33 21Q50 15 67 21" fill="none" stroke="#C98A12" stroke-width="1"/>
+    <circle cx="50" cy="9.500" r="2.300" fill="#E22E4A"/><circle cx="45" cy="13.500" r="1.100" fill="#fff"/><circle cx="55" cy="13.500" r="1.100" fill="#fff"/><circle cx="38" cy="16" r="1" fill="#fff"/><circle cx="62" cy="16" r="1" fill="#fff"/>
+    <g class="pglint"><path d="M50 3V-1M47 5L45 2M53 5L55 2" stroke="#fff" stroke-width="1" stroke-linecap="round"/></g>
+    <g><circle cx="31" cy="23" r="3.200" fill="#FF8FB5"/><circle cx="27" cy="26" r="2.800" fill="#fff"/><circle cx="32" cy="27" r="2.600" fill="#FF8FB5"/><circle cx="31" cy="25" r="1" fill="#FFC93C"/><circle cx="27" cy="26" r=".9" fill="#FFC93C"/></g>
+    <g><circle cx="69" cy="23" r="3.200" fill="#FFB35C"/><circle cx="73" cy="26" r="2.800" fill="#fff"/><circle cx="68" cy="27" r="2.600" fill="#FF8FB5"/><circle cx="69" cy="25" r="1" fill="#FFC93C"/><circle cx="73" cy="26" r=".9" fill="#FFC93C"/></g>`;
+  return `<svg viewBox="${head?'10 -2 80 66':'0 -2 100 132'}" class="princess ${head?'phead':''}" aria-hidden="true">${defs}${body}${face}</svg>`;
 }
 /* ---------- time, animals ---------- */
 const timeStr=(h,m)=>`${h}:${String(m).padStart(2,'0')}`;
@@ -1405,7 +1465,7 @@ async function endQ(){
   if(q.kind==='build'){
     await sayParts([...q.word.split('').flatMap(l=>[{sound:l},120]),250,q.word+'!',praise()]);
   }else{
-    await sayParts([praise()]);
+    const pr=praise(),ms=[3,5,8,12].includes(R.combo)&&!R.quiz?`${R.combo} in a row! `:'';bubble(ms+pr);await sayParts([ms+pr]);
   }
   await wait(350);
   if(R!==me)return;
@@ -1419,7 +1479,7 @@ function answer(i){
   else{
     R.miss++;el.classList.add('wrong');el.disabled=true;sfx.no();react('no');
     if(R.miss>=2){const g=q.choices.findIndex(x=>x.ok);document.querySelector(`[data-act="ans"][data-i="${g}"]`).classList.add('hint');sayParts(["It's this one!"])}
-    else sayParts([pick(['Try again!','Nearly! Have another go.','Oops, try another one.'])]);
+    else{const o=oopsLine();bubble(o);sayParts([o])}
   }
 }
 function buildTile(btn){
@@ -1434,7 +1494,7 @@ function buildTile(btn){
   }else{
     R.miss++;react('no');btn.style.animation='shake .4s';setTimeout(()=>btn.style.animation='',420);sfx.no();
     if(R.miss>=2){const good=[...document.querySelectorAll('.tile')].find(t=>t.dataset.l===need&&!t.classList.contains('used'));if(good)good.classList.add('hint')}
-    sayParts(['Try again!']);
+    const o=oopsLine();bubble(o);sayParts([o]);
   }
 }
 function countObj(btn){
@@ -1479,7 +1539,7 @@ function celebrate({stars,next,leveled,f,id,aw,bonus,combo,speedy}){
   sayParts([f>=7?'Brilliant!':f>=5?'Well done!':"Nice try! Let's keep practising.",
     ...(aw?['You got a new sticker!',...(aw.shiny?['A shiny one!']:[]),...(aw.medals.length?['A special sticker!']:[])]:[]),
     ...(bonus?['And a bonus sticker!']:[]),
-    ...(next?[`You unlocked ${who.spoken}!`]:[]),...(leveled?['And the next questions will be trickier!']:[])]);
+    ...(next?[`You unlocked ${who.spoken}!`]:[]),...(leveled?['And the next questions will be trickier!']:[]),...(f>=7?[`You are a star, ${nm()}!`]:[])]);
   R=null;
 }
 
@@ -1829,7 +1889,7 @@ app.addEventListener('click',e=>{
   const act=t.dataset.act,arg=t.dataset.arg;
   switch(act){
    case 'setup-save':S.name=$('#nameIn').value.trim();save();screenSplash();break;
-   case 'start':getCtx();startMusic();sfx.pop();if(!S.placed){screenQuizIntro();break}screenHome();sayParts(['Hi!','What shall we play?']);break;
+   case 'start':getCtx();startMusic();sfx.pop();if(!S.placed){screenQuizIntro();break}screenHome();sayParts([`Hello ${nm()}! I am Princess Rosa.`,'What shall we play?']);break;
    case 'home':R=null;screenHome();break;
    case 'quizgo':startQuiz();break;
    case 'quizskip':S.placed=true;save();screenHome();sayParts(['Hi!','What shall we play?']);break;
@@ -1842,7 +1902,7 @@ app.addEventListener('click',e=>{
    case 'ptab':pTab=arg;screenParent();break;
    case 'copy':{const txt=summaryText(),fail=()=>screenParent('Copy this text by hand:');try{navigator.clipboard.writeText(txt).then(()=>screenParent('Copied. You can paste it into a message.'),fail)}catch(e){fail()}break}
    case 'music':S.music=!S.music;save();if(S.music)startMusic();else stopMusic();screenHome();break;
-   case 'menu':screenMenu(arg);break;
+   case 'menu':screenMenu(arg);sayParts([MENU_LINE[arg]||'']);break;
    case 'menu-back':screenMenu(menuOf);break;
    case 'blocks':screenBlocks();break;
    case 'locked':t.style.animation='shake .4s';setTimeout(()=>t.style.animation='',420);sayParts(['Finish the one before first!']);break;
